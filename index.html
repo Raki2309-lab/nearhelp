@@ -3,277 +3,472 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>NearHelp - Community Help Board</title>
-
+<title>NearHelp | Local Community Support</title>
 <style>
+:root {
+  --bg: #0e1b2b;
+  --surface: rgba(255,255,255,0.08);
+  --surface-strong: rgba(255,255,255,0.12);
+  --text: #f4f7fb;
+  --accent: #54c1ff;
+  --accent-dark: #30a6d9;
+  --muted: #b8c8de;
+  --radius: 20px;
+  --shadow: 0 18px 60px rgba(0,0,0,0.25);
+}
 * {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
-  font-family: 'Segoe UI', sans-serif;
 }
-
+html {
+  scroll-behavior: smooth;
+}
 body {
-  background: linear-gradient(to right, #1e3c72, #2a5298);
-  color: white;
+  font-family: Inter, system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  min-height: 100vh;
+  background: radial-gradient(circle at top left, rgba(84,193,255,0.15), transparent 35%),
+              radial-gradient(circle at bottom right, rgba(255,255,255,0.06), transparent 15%),
+              linear-gradient(180deg, #07101b 0%, #14273d 45%, #0e1b2b 100%);
+  color: var(--text);
 }
-
-/* NAVBAR */
+button, input, textarea, select {
+  font: inherit;
+}
+header {
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  background: rgba(5,15,29,.92);
+  backdrop-filter: blur(18px);
+  border-bottom: 1px solid rgba(255,255,255,0.06);
+}
 .navbar {
+  max-width: 1160px;
+  margin: 0 auto;
+  padding: 22px 24px;
   display: flex;
+  align-items: center;
   justify-content: space-between;
-  padding: 15px 30px;
-  background: rgba(0,0,0,0.3);
+  gap: 24px;
 }
-
-.navbar h2 {
-  color: #00e5ff;
+.brand {
+  font-size: 1.15rem;
+  font-weight: 700;
+  letter-spacing: .04em;
 }
-
-.navbar button {
-  margin-left: 10px;
+.navlinks {
+  display: flex;
+  gap: 18px;
 }
-
-/* HERO */
+.navlinks a {
+  color: var(--muted);
+  text-decoration: none;
+  transition: color .2s ease;
+}
+.navlinks a:hover {
+  color: var(--text);
+}
 .hero {
-  text-align: center;
-  padding: 60px 20px;
+  max-width: 1160px;
+  margin: 0 auto;
+  padding: 72px 24px 56px;
+  display: grid;
+  grid-template-columns: 1.1fr .9fr;
+  gap: 40px;
+  align-items: center;
 }
-
-.hero h1 {
-  font-size: 42px;
+.hero-copy h1 {
+  font-size: clamp(2.5rem, 4vw, 3.8rem);
+  line-height: 1.02;
 }
-
-.hero p {
-  opacity: 0.9;
+.hero-copy p {
+  margin-top: 24px;
+  max-width: 640px;
+  color: var(--muted);
+  font-size: 1.05rem;
 }
-
-/* SECTION */
-.container {
-  max-width: 1100px;
-  margin: auto;
-  padding: 20px;
+.cta-group {
+  margin-top: 32px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
 }
-
-/* CARD */
-.card {
-  background: rgba(255,255,255,0.1);
-  backdrop-filter: blur(10px);
-  padding: 20px;
-  border-radius: 12px;
-  margin-bottom: 20px;
+.cta {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 14px 24px;
+  border-radius: 999px;
+  background: var(--accent);
+  color: #07101b;
+  font-weight: 600;
+  text-decoration: none;
+  transition: transform .2s ease, box-shadow .2s ease;
 }
-
-/* FORM */
+.cta.secondary {
+  background: transparent;
+  color: var(--text);
+  border: 1px solid rgba(255,255,255,.14);
+}
+.cta:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 18px 40px rgba(5,20,40,.15);
+}
+.hero-visual {
+  background: var(--surface);
+  border: 1px solid rgba(255,255,255,0.08);
+  border-radius: 32px;
+  padding: 28px;
+  box-shadow: var(--shadow);
+}
+.panel {
+  display: grid;
+  gap: 18px;
+}
+.panel-item {
+  background: rgba(255,255,255,.08);
+  padding: 22px;
+  border-radius: 22px;
+  border: 1px solid rgba(255,255,255,.06);
+}
+.panel-item h3 {
+  font-size: 1rem;
+  margin-bottom: 10px;
+}
+.panel-item p {
+  color: var(--muted);
+}
+main {
+  max-width: 1160px;
+  margin: 0 auto;
+  padding: 0 24px 56px;
+}
+.section {
+  margin-top: 24px;
+}
+.grid {
+  display: grid;
+  gap: 24px;
+}
+.info-grid {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+.feature-card {
+  background: var(--surface);
+  border: 1px solid rgba(255,255,255,.08);
+  border-radius: 24px;
+  padding: 32px;
+  box-shadow: var(--shadow);
+}
+.feature-card h3,
+.feature-card h2 {
+  margin-bottom: 14px;
+}
+.feature-card p {
+  color: var(--muted);
+}
+.board {
+  display: grid;
+  grid-template-columns: 1.3fr .9fr;
+  gap: 24px;
+}
+.board-panel {
+  background: var(--surface);
+  border: 1px solid rgba(255,255,255,.08);
+  border-radius: 28px;
+  padding: 32px;
+  box-shadow: var(--shadow);
+}
+.board-panel h2 {
+  margin-bottom: 16px;
+  font-size: 1.5rem;
+}
+.request-card {
+  background: rgba(255,255,255,.05);
+  border: 1px solid rgba(255,255,255,.08);
+  border-radius: 20px;
+  padding: 22px;
+  margin-top: 18px;
+  transition: transform .2s ease, border-color .2s ease;
+}
+.request-card:hover {
+  transform: translateY(-1px);
+  border-color: rgba(84,193,255,.35);
+}
+.request-card h3 {
+  font-size: 1.1rem;
+  margin-bottom: 10px;
+}
+.meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  color: var(--muted);
+  font-size: .95rem;
+}
+.badge {
+  display: inline-flex;
+  padding: 7px 12px;
+  border-radius: 999px;
+  font-size: .82rem;
+  font-weight: 600;
+  background: rgba(84,193,255,.12);
+  color: var(--accent);
+}
+.form-field {
+  margin-top: 16px;
+}
+.form-field label {
+  display: block;
+  margin-bottom: 10px;
+  color: var(--text);
+  font-weight: 600;
+}
 input, textarea, select {
   width: 100%;
-  padding: 10px;
-  margin: 8px 0;
-  border-radius: 6px;
-  border: none;
+  padding: 14px 18px;
+  border-radius: 16px;
+  border: 1px solid rgba(255,255,255,.12);
+  background: rgba(255,255,255,.05);
+  color: var(--text);
+  outline: none;
+  transition: border-color .2s ease, background .2s ease;
 }
-
-/* BUTTON */
-button {
-  padding: 10px;
-  border: none;
-  border-radius: 6px;
-  background: #00c6ff;
-  color: white;
-  cursor: pointer;
+input:focus, textarea:focus, select:focus {
+  border-color: rgba(84,193,255,.4);
+  background: rgba(255,255,255,.09);
 }
-
-button:hover {
-  background: #0072ff;
+textarea {
+  min-height: 140px;
+  resize: vertical;
 }
-
-/* FILTER */
-.filter-bar {
+.action-row {
   display: flex;
-  gap: 10px;
-  flex-wrap: wrap;
+  justify-content: flex-end;
+  margin-top: 22px;
 }
-
-/* REQUEST CARDS */
-.req-card {
-  background: rgba(255,255,255,0.15);
-  padding: 15px;
-  border-radius: 10px;
+.primary-btn {
+  padding: 14px 24px;
+  border-radius: 999px;
+  border: none;
+  background: var(--accent);
+  color: #07101b;
+  font-weight: 700;
+  cursor: pointer;
+  transition: background .2s ease, transform .2s ease;
+}
+.primary-btn:hover {
+  background: var(--accent-dark);
+}
+.filter-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 14px;
   margin-top: 10px;
 }
-
-.status.open { color: #00ff9f; }
-.status.resolved { color: #ff4d4d; }
-
-/* AUTH MODAL */
-.modal {
-  display: none;
-  position: fixed;
-  top:0; left:0;
-  width:100%; height:100%;
-  background: rgba(0,0,0,0.7);
+.filter-row input,
+.filter-row select {
+  max-width: 320px;
 }
-
-.modal-content {
-  background: white;
-  color: black;
-  padding: 20px;
-  width: 300px;
-  margin: 10% auto;
-  border-radius: 10px;
+@media (max-width: 980px) {
+  .hero {
+    grid-template-columns: 1fr;
+  }
+  .board {
+    grid-template-columns: 1fr;
+  }
+  .info-grid {
+    grid-template-columns: 1fr;
+  }
 }
-
-/* RESPONSIVE */
-@media(max-width:768px){
-  .filter-bar { flex-direction: column; }
+@media (max-width: 680px) {
+  .navbar {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  .hero-copy h1 {
+    font-size: 2.4rem;
+  }
+  .cta-group {
+    flex-direction: column;
+    align-items: stretch;
+  }
 }
 </style>
 </head>
-
 <body>
-
-<!-- NAVBAR -->
-<div class="navbar">
-  <h2>NearHelp</h2>
-  <div>
-    <button onclick="openAuth()">Login</button>
-    <button onclick="openAuth()">Register</button>
+<header>
+  <div class="navbar">
+    <div class="brand">NearHelp</div>
+    <nav class="navlinks">
+      <a href="#platform">Platform</a>
+      <a href="#features">Features</a>
+      <a href="#requests">Requests</a>
+    </nav>
   </div>
-</div>
-
-<!-- HERO -->
-<div class="hero">
-  <h1>Community Help Board</h1>
-  <p>Connecting people in your locality for sharing, support, and collaboration</p>
-</div>
-
-<div class="container">
-
-<!-- ABOUT -->
-<div class="card">
-  <h2>About NearHelp</h2>
-  <p>
-    The Community Help Board is a web-based platform designed to promote collaboration,
-    resource sharing, and mutual assistance within local communities. Users can post requests
-    such as borrowing items, finding rides, or accessing study materials.
-  </p>
-  <br>
-  <p>
-    Requests are organized based on locality, allowing users to connect with nearby people.
-    This improves efficiency and ensures faster help. The platform is scalable and can be
-    deployed using cloud services like AWS EC2.
-  </p>
-</div>
-
-<!-- POST REQUEST -->
-<div class="card">
-  <h2>Post a Request</h2>
-  <input id="title" placeholder="Title">
-  <textarea id="desc" placeholder="Description"></textarea>
-
-  <select id="category">
-    <option>Borrow Item</option>
-    <option>Need Ride</option>
-    <option>Need Notes</option>
-    <option>Other</option>
-  </select>
-
-  <input id="locality" placeholder="Locality">
-  <button onclick="add()">Post Request</button>
-</div>
-
-<!-- FILTER -->
-<div class="card filter-bar">
-  <select id="filterCat" onchange="filter()">
-    <option>All</option>
-    <option>Borrow Item</option>
-    <option>Need Ride</option>
-    <option>Need Notes</option>
-    <option>Other</option>
-  </select>
-
-  <input id="filterLoc" placeholder="Filter by locality" onkeyup="filter()">
-</div>
-
-<!-- BOARD -->
-<div class="card">
-  <h2>Help Board</h2>
-  <div id="board"></div>
-</div>
-
-</div>
-
-<!-- AUTH MODAL -->
-<div class="modal" id="authModal">
-  <div class="modal-content">
-    <h3>User Authentication</h3>
-    <input placeholder="Username">
-    <input type="password" placeholder="Password">
-    <button>Submit</button>
+</header>
+<section class="hero">
+  <div class="hero-copy">
+    <h1>Local support for real needs, delivered with clarity and trust.</h1>
+    <p>NearHelp is built to help neighbors connect through clear requests, dependable responses, and thoughtful local coordination. The site presents each request with just enough context to make offering help fast and natural.</p>
+    <div class="cta-group">
+      <a class="cta" href="#requests">Browse requests</a>
+      <a class="cta secondary" href="#platform">How it works</a>
+    </div>
   </div>
-</div>
-
+  <div class="hero-visual">
+    <div class="panel">
+      <div class="panel-item">
+        <h3>Structured request flow</h3>
+        <p>Each entry focuses on the essential details visitors need to respond effectively.</p>
+      </div>
+      <div class="panel-item">
+        <h3>Meaningful filters</h3>
+        <p>Category and locality controls help users find the right support quickly.</p>
+      </div>
+      <div class="panel-item">
+        <h3>Respectful communication</h3>
+        <p>The interface encourages considerate participation for both askers and helpers.</p>
+      </div>
+    </div>
+  </div>
+</section>
+<main>
+  <section class="section" id="platform">
+    <div class="feature-card">
+      <h2>Humanized support with a professional presentation</h2>
+      <p>NearHelp presents community assistance in a refined way: accessible copy, consistent visual hierarchy, and a calm interface tone. The result is a static website that feels well-designed yet practical, suitable for real neighborhood collaboration.</p>
+      <p>Visitors can understand the purpose of the platform immediately, get comfortable with the process, and act without hesitation.</p>
+    </div>
+  </section>
+  <section class="section" id="features">
+    <div class="grid info-grid">
+      <div class="feature-card">
+        <h3>Clear request creation</h3>
+        <p>Users can post precise support requests with category, locality, and concise description fields.</p>
+      </div>
+      <div class="feature-card">
+        <h3>Focused search</h3>
+        <p>Filter controls keep the board relevant, reducing clutter and surfacing active needs.</p>
+      </div>
+      <div class="feature-card">
+        <h3>Approachable interface</h3>
+        <p>The design is calm, readable, and easy to scan across devices.</p>
+      </div>
+    </div>
+  </section>
+  <section class="section board" id="requests">
+    <div class="board-panel">
+      <h2>Community request board</h2>
+      <div class="filter-row">
+        <select id="filterCat" onchange="filterRequests()">
+          <option value="All">All categories</option>
+          <option value="Borrow Item">Borrow Item</option>
+          <option value="Need Ride">Need Ride</option>
+          <option value="Need Notes">Need Notes</option>
+          <option value="Other">Other</option>
+        </select>
+        <input id="filterLoc" type="text" placeholder="Search by locality" oninput="filterRequests()">
+      </div>
+      <div id="board"></div>
+    </div>
+    <div class="board-panel">
+      <h2>Post your request</h2>
+      <div class="form-field">
+        <label for="title">Request title</label>
+        <input id="title" placeholder="Example: Need a laptop charger for a short loan">
+      </div>
+      <div class="form-field">
+        <label for="desc">Description</label>
+        <textarea id="desc" placeholder="Explain the need and any details that help responders understand"></textarea>
+      </div>
+      <div class="form-field">
+        <label for="category">Category</label>
+        <select id="category">
+          <option>Borrow Item</option>
+          <option>Need Ride</option>
+          <option>Need Notes</option>
+          <option>Other</option>
+        </select>
+      </div>
+      <div class="form-field">
+        <label for="locality">Locality</label>
+        <input id="locality" placeholder="Neighborhood or area">
+      </div>
+      <div class="action-row">
+        <button class="primary-btn" onclick="addRequest()">Submit request</button>
+      </div>
+    </div>
+  </section>
+</main>
 <script>
-let data = [
-  {title:"Need Bike", category:"Need Ride", locality:"Bangalore", status:"Open"},
-  {title:"Borrow Book", category:"Borrow Item", locality:"Mysore", status:"Resolved"}
+const initialRequests = [
+  { title: "Need a study guide for university assignment", category: "Need Notes", locality: "Central district", status: "Open" },
+  { title: "Looking for a short-term laptop charger lend", category: "Borrow Item", locality: "Riverside", status: "Open" },
+  { title: "Requesting a ride to the Saturday market", category: "Need Ride", locality: "West End", status: "Resolved" }
 ];
-
-function render(list=data){
-  let board = document.getElementById("board");
+let requests = [...initialRequests];
+function renderRequests(list = requests) {
+  const board = document.getElementById("board");
   board.innerHTML = "";
-
-  list.forEach((x,i)=>{
-    board.innerHTML += `
-      <div class="req-card">
-        <h3>${x.title}</h3>
-        <p>${x.category} | ${x.locality}</p>
-        <p class="status ${x.status.toLowerCase()}">${x.status}</p>
-        <button onclick="resolve(${i})">Respond</button>
+  if (!list.length) {
+    board.innerHTML = '<p style="color:var(--muted);margin-top:18px;">No requests match the selected filter.</p>';
+    return;
+  }
+  list.forEach((item, index) => {
+    const card = document.createElement("div");
+    card.className = "request-card";
+    card.innerHTML = `
+      <h3>${item.title}</h3>
+      <div class="meta">
+        <span>${item.category}</span>
+        <span>${item.locality}</span>
+      </div>
+      <div class="meta" style="margin-top:12px;">
+        <span class="badge">${item.status}</span>
+      </div>
+      <div class="action-row">
+        <button class="primary-btn" style="background:transparent;color:var(--text);border:1px solid rgba(255,255,255,.14);" onclick="toggleStatus(${index})">
+          ${item.status === "Open" ? "Mark resolved" : "Reopen request"}
+        </button>
       </div>
     `;
+    board.appendChild(card);
   });
 }
-
-function add(){
-  let t = title.value;
-  let c = category.value;
-  let l = locality.value;
-
-  if(!t || !l) return alert("Fill required fields");
-
-  data.push({title:t, category:c, locality:l, status:"Open"});
-  render();
+function addRequest() {
+  const title = document.getElementById("title").value.trim();
+  const desc = document.getElementById("desc").value.trim();
+  const category = document.getElementById("category").value;
+  const locality = document.getElementById("locality").value.trim();
+  if (!title || !locality) {
+    alert("Please provide a title and locality for the request.");
+    return;
+  }
+  requests.unshift({ title, category, locality, status: "Open" });
+  document.getElementById("title").value = "";
+  document.getElementById("desc").value = "";
+  document.getElementById("locality").value = "";
+  document.getElementById("filterLoc").value = "";
+  document.getElementById("filterCat").value = "All";
+  renderRequests();
 }
-
-function resolve(i){
-  data[i].status="Resolved";
-  render();
+function toggleStatus(index) {
+  requests[index].status = requests[index].status === "Open" ? "Resolved" : "Open";
+  renderRequests();
 }
-
-function filter(){
-  let cat = filterCat.value;
-  let loc = filterLoc.value.toLowerCase();
-
-  let filtered = data.filter(x =>
-    (cat==="All" || x.category===cat) &&
-    x.locality.toLowerCase().includes(loc)
-  );
-
-  render(filtered);
+function filterRequests() {
+  const category = document.getElementById("filterCat").value;
+  const locality = document.getElementById("filterLoc").value.trim().toLowerCase();
+  const filtered = requests.filter(item => {
+    const categoryMatch = category === "All" || item.category === category;
+    const localityMatch = !locality || item.locality.toLowerCase().includes(locality);
+    return categoryMatch && localityMatch;
+  });
+  renderRequests(filtered);
 }
-
-/* AUTH */
-function openAuth(){
-  authModal.style.display="block";
-}
-
-window.onclick = e=>{
-  if(e.target==authModal) authModal.style.display="none";
-};
-
-render();
+renderRequests();
 </script>
-
 </body>
 </html>
