@@ -1,0 +1,2568 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>NearHelp | Local Community Support</title>
+<style>
+:root {
+  --bg: #0e1b2b;
+  --surface: rgba(255,255,255,0.08);
+  --surface-strong: rgba(255,255,255,0.12);
+  --text: #f4f7fb;
+  --accent: #54c1ff;
+  --accent-dark: #30a6d9;
+  --muted: #b8c8de;
+  --radius: 20px;
+  --shadow: 0 18px 60px rgba(0,0,0,0.25);
+}
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+html {
+  scroll-behavior: smooth;
+  scroll-padding-top: 90px;
+}
+body {
+  font-family: Inter, system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  min-height: 100vh;
+  background: radial-gradient(circle at top left, rgba(126, 95, 255, 0.18), transparent 35%),
+              radial-gradient(circle at bottom right, rgba(62, 192, 255, 0.12), transparent 18%),
+              linear-gradient(180deg, #0c122d 0%, #131a54 45%, #08121f 100%);
+  color: var(--text);
+}
+button, input, textarea, select {
+  font: inherit;
+}
+header {
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  background: rgba(5,15,29,.92);
+  backdrop-filter: blur(18px);
+  border-bottom: 1px solid rgba(255,255,255,0.06);
+}
+.navbar {
+  max-width: 1160px;
+  margin: 0 auto;
+  padding: 22px 24px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
+}
+.brand {
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  font-size: 1.15rem;
+  font-weight: 700;
+  letter-spacing: .04em;
+  color: var(--text);
+  text-decoration: none;
+}
+.brand .logo {
+  width: 2rem;
+  height: 2rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 16px;
+  background: var(--accent);
+  color: #07101b;
+  font-size: 0.95rem;
+  font-weight: 800;
+}
+.navlinks {
+  display: flex;
+  gap: 18px;
+}
+.navlinks a {
+  position: relative;
+  color: var(--muted);
+  text-decoration: none;
+  transition: color .2s ease;
+}
+.navlinks a::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  bottom: -4px;
+  width: 0;
+  height: 2px;
+  background: var(--accent);
+  transition: width .25s ease;
+}
+.navlinks a:hover {
+  color: var(--text);
+}
+.navlinks a:hover::after {
+  width: 100%;
+}
+.nav-toggle {
+  display: none;
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  padding: 10px;
+}
+.nav-toggle span {
+  display: block;
+  width: 24px;
+  height: 2.5px;
+  margin: 4.5px 0;
+  background: #ffffff;
+  border-radius: 4px;
+  transition: transform .2s ease, opacity .2s ease;
+}
+.nav-open .sidebar {
+  transform: translateX(0);
+}
+.sidebar {
+  position: fixed;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: 270px;
+  background: #141b33;
+  z-index: 100;
+  transform: translateX(-100%);
+  transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  padding: 20px 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 25px;
+  box-shadow: 20px 0 50px rgba(0,0,0,0.3);
+}
+.sidebar-logo {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-weight: 700;
+  font-size: 1.1rem;
+  padding: 0 12px 10px;
+  border-bottom: 1px solid rgba(255,255,255,0.05);
+}
+.sidebar-nav {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+.sidebar-nav a {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 14px;
+  color: rgba(255,255,255,0.7);
+  text-decoration: none;
+  border-radius: 10px;
+  font-weight: 500;
+  font-size: 0.95rem;
+  transition: all 0.2s ease;
+  position: relative;
+}
+.sidebar-nav a:hover {
+  background: rgba(255,255,255,0.04);
+  color: #fff;
+}
+.sidebar-nav a.active {
+  background: rgba(84, 193, 255, 0.12);
+  color: var(--accent);
+}
+.sidebar-nav a.active::before {
+  content: "";
+  position: absolute;
+  left: -12px;
+  top: 0;
+  bottom: 0;
+  width: 4px;
+  background: var(--accent);
+  border-radius: 0 4px 4px 0;
+}
+.sidebar-nav a svg {
+  opacity: 0.7;
+}
+.sidebar-nav a.active svg {
+  opacity: 1;
+}
+.overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.5);
+  backdrop-filter: blur(4px);
+  z-index: 90;
+  display: none;
+}
+.nav-open .overlay {
+  display: block;
+}
+.hero {
+  max-width: 1160px;
+  margin: 0 auto;
+  padding: 72px 24px 56px;
+  display: grid;
+  grid-template-columns: 1.1fr .9fr;
+  gap: 40px;
+  align-items: center;
+}
+.hero-copy h1 {
+  font-size: clamp(2.6rem, 4vw, 3.8rem);
+  line-height: 1.02;
+}
+.hero-copy p {
+  margin-top: 24px;
+  max-width: 720px;
+  color: var(--muted);
+  font-size: 1.07rem;
+  line-height: 1.75;
+}
+.cta-group {
+  margin-top: 32px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+}
+.cta {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 16px 26px;
+  border-radius: 999px;
+  background: linear-gradient(135deg, var(--accent), var(--accent-dark));
+  color: #07101b;
+  font-weight: 700;
+  text-decoration: none;
+  box-shadow: 0 14px 38px rgba(84,193,255,.2);
+  transition: transform .2s ease, box-shadow .2s ease, opacity .2s ease;
+}
+.cta.secondary {
+  background: rgba(255,255,255,.08);
+  color: var(--text);
+  border: 1px solid rgba(255,255,255,.18);
+}
+.cta:hover,
+.cta.secondary:hover {
+  transform: translateY(-1px);
+  opacity: .96;
+  box-shadow: 0 20px 42px rgba(84,193,255,.2);
+}
+.hero-visual {
+  position: relative;
+  display: grid;
+  place-items: center;
+  min-height: 420px;
+  background: linear-gradient(180deg, rgba(255,255,255,.08), rgba(255,255,255,.02));
+  border: 1px solid rgba(255,255,255,0.08);
+  border-radius: 32px;
+  padding: 32px;
+  box-shadow: var(--shadow);
+  overflow: hidden;
+}
+.hero-visual::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(circle at top right, rgba(84,193,255,.16), transparent 30%),
+              radial-gradient(circle at bottom left, rgba(255,255,255,.08), transparent 22%);
+  pointer-events: none;
+}
+.panel {
+  position: relative;
+  display: grid;
+  gap: 20px;
+}
+.panel-item {
+  position: relative;
+  background: rgba(255,255,255,.08);
+  padding: 24px;
+  border-radius: 26px;
+  border: 1px solid rgba(255,255,255,.08);
+}
+.panel-item h3 {
+  font-size: 1rem;
+  margin-bottom: 10px;
+}
+.panel-item p {
+  color: var(--muted);
+}
+main {
+  max-width: 1160px;
+  margin: 0 auto;
+  padding: 0 24px 56px;
+}
+.section {
+  margin-top: 24px;
+}
+.grid {
+  display: grid;
+  gap: 24px;
+}
+.info-grid {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+.feature-card {
+  background: var(--surface);
+  border: 1px solid rgba(255,255,255,.08);
+  border-radius: 24px;
+  padding: 32px;
+  box-shadow: var(--shadow);
+}
+.feature-card h3,
+.feature-card h2 {
+  margin-bottom: 14px;
+}
+.feature-card p {
+  color: var(--muted);
+}
+  .image-grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+  .image-card {
+    overflow: hidden;
+    border-radius: 28px;
+    border: 1px solid rgba(255,255,255,.08);
+    background: rgba(255,255,255,.05);
+    box-shadow: var(--shadow);
+  }
+  .image-card img {
+    width: 100%;
+    height: 280px;
+    object-fit: cover;
+    display: block;
+  }
+  .image-card p {
+    padding: 20px;
+    color: var(--muted);
+    line-height: 1.6;
+  }
+.board {
+  display: grid;
+  grid-template-columns: 1.3fr .9fr;
+  gap: 24px;
+}
+.board-panel {
+  background: rgba(255,255,255,.05);
+  border: 1px solid rgba(255,255,255,.08);
+  border-radius: 28px;
+  padding: 32px;
+  box-shadow: var(--shadow);
+  transition: transform .2s ease, border-color .2s ease, background .2s ease;
+}
+.board-panel:hover {
+  transform: translateY(-1px);
+  border-color: rgba(84,193,255,.24);
+}
+.board-panel.post-form {
+  background: linear-gradient(180deg, rgba(255,255,255,.08), rgba(255,255,255,.04));
+  border-color: rgba(255,255,255,.1);
+}
+.board-panel h2 {
+  margin-bottom: 16px;
+  font-size: 1.5rem;
+}
+.form-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+}
+.form-grid .form-field:nth-child(2),
+.form-grid .form-field:nth-child(5),
+.form-grid .action-row {
+  grid-column: 1 / -1;
+}
+.form-grid .form-field:nth-child(2) textarea {
+  min-height: 180px;
+}
+.request-card {
+  background: rgba(255,255,255,.06);
+  border: 1px solid rgba(255,255,255,.1);
+  border-radius: 24px;
+  padding: 24px;
+  margin-top: 18px;
+  transition: transform .2s ease, border-color .2s ease, box-shadow .2s ease;
+}
+.request-card:hover {
+  transform: translateY(-2px);
+  border-color: rgba(84,193,255,.35);
+  box-shadow: 0 18px 40px rgba(0,0,0,.12);
+}
+.request-card h3 {
+  font-size: 1.15rem;
+  margin-bottom: 12px;
+}
+.card-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  align-items: center;
+  margin-bottom: 16px;
+}
+.card-footer {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  margin-top: 20px;
+}
+.status-badge {
+  display: inline-flex;
+  padding: 10px 14px;
+  border-radius: 999px;
+  font-size: .85rem;
+  font-weight: 700;
+  background: rgba(255,255,255,.12);
+  color: var(--text);
+}
+.status-open {
+  background: rgba(84,193,255,.16);
+  color: var(--accent);
+}
+.status-resolved {
+  background: rgba(120,255,160,.16);
+  color: #a6ffb6;
+}
+.secondary-btn {
+  padding: 12px 20px;
+  border-radius: 999px;
+  border: 1px solid rgba(255,255,255,.16);
+  background: rgba(255,255,255,.08);
+  color: var(--text);
+  font-weight: 700;
+  cursor: pointer;
+  transition: background .2s ease, transform .2s ease, border-color .2s ease;
+}
+.secondary-btn:hover {
+  background: rgba(255,255,255,.14);
+  transform: translateY(-1px);
+}
+.meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  color: var(--muted);
+  font-size: .95rem;
+}
+.badge {
+  display: inline-flex;
+  padding: 7px 12px;
+  border-radius: 999px;
+  font-size: .82rem;
+  font-weight: 600;
+  background: rgba(84,193,255,.12);
+  color: var(--accent);
+}
+.price-badge {
+  display: inline-flex;
+  padding: 7px 12px;
+  border-radius: 999px;
+  font-size: .82rem;
+  font-weight: 700;
+  background: rgba(120, 255, 160, 0.12);
+  color: #a6ffb6;
+  border: 1px solid rgba(120, 255, 160, 0.2);
+}
+.board-panel p.subtitle {
+  color: var(--muted);
+  margin-top: 8px;
+  line-height: 1.65;
+}
+.form-field {
+  margin-top: 18px;
+}
+.hidden {
+  display: none !important;
+}
+.form-field label {
+  display: block;
+  margin-bottom: 8px;
+  color: var(--text);
+  font-weight: 700;
+  letter-spacing: .01em;
+}
+input, textarea, select {
+  width: 100%;
+  padding: 16px 18px;
+  border-radius: 18px;
+  border: 1px solid rgba(255,255,255,.14);
+  background: rgba(255,255,255,.06);
+  color: var(--text);
+  outline: none;
+  transition: border-color .2s ease, background .2s ease, box-shadow .2s ease;
+}
+input::placeholder, textarea::placeholder {
+  color: rgba(248,250,255,.56);
+}
+select {
+  background: linear-gradient(180deg, #0b1c3e 0%, #10245f 100%);
+  color: var(--text);
+}
+select option {
+  background: #0b1c3e;
+  color: #f4f7fb;
+}
+input:focus, textarea:focus, select:focus {
+  border-color: rgba(84,193,255,.55);
+  background: rgba(255,255,255,.1);
+  box-shadow: 0 0 0 4px rgba(84,193,255,.08);
+}
+textarea {
+  min-height: 160px;
+  resize: vertical;
+}
+.action-row {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 24px;
+}
+.primary-btn {
+  padding: 16px 26px;
+  border-radius: 999px;
+  border: none;
+  background: linear-gradient(135deg, var(--accent), var(--accent-dark));
+  color: #07101b;
+  font-weight: 700;
+  box-shadow: 0 18px 40px rgba(84,193,255,.2);
+  cursor: pointer;
+  transition: transform .2s ease, box-shadow .2s ease;
+}
+.primary-btn:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 22px 48px rgba(84,193,255,.25);
+}
+.filter-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 14px;
+  margin-top: 16px;
+  align-items: center;
+  padding: 18px 0 10px;
+  border-bottom: 1px solid rgba(255,255,255,.08);
+}
+.filter-row select,
+.filter-row input {
+  flex: 1 1 220px;
+  max-width: 320px;
+  padding: 14px 16px;
+  border-radius: 18px;
+  border: 1px solid rgba(255,255,255,.14);
+  background: rgba(255,255,255,.05);
+  color: var(--text);
+  transition: border-color .2s ease, background .2s ease, box-shadow .2s ease;
+}
+.filter-row select {
+  min-width: 220px;
+}
+.filter-row input {
+  min-width: 220px;
+}
+.filter-row select:focus,
+.filter-row input:focus {
+  border-color: rgba(84,193,255,.55);
+  background: linear-gradient(180deg, #0b1c3e 0%, #10245f 100%);
+  box-shadow: 0 0 0 4px rgba(84,193,255,.08);
+}
+.footer {
+  padding: 22px 24px;
+  text-align: center;
+  color: var(--muted);
+  font-size: .95rem;
+  border-top: 1px solid rgba(255,255,255,.08);
+  margin-top: 40px;
+}
+.footer strong {
+  color: var(--text);
+}
+@media (max-width: 980px) {
+  .hero {
+    grid-template-columns: 1fr;
+  }
+  .board {
+    grid-template-columns: 1fr;
+  }
+  .info-grid {
+    grid-template-columns: 1fr;
+  }
+  .form-grid {
+    grid-template-columns: 1fr;
+  }
+  .board-panel {
+    padding: 26px;
+  }
+  .filter-row {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  .filter-row select,
+  .filter-row input {
+    max-width: 100%;
+  }
+}
+@media (max-width: 1024px) {
+  .nav-toggle {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    background: transparent;
+    border: none;
+    padding: 8px;
+    z-index: 101;
+  }
+  .navbar {
+    padding: 15px 20px;
+    flex-direction: row !important;
+    align-items: center !important;
+  }
+  .navlinks {
+    display: none !important;
+  }
+}
+@media (max-width: 680px) {
+  .hero-copy h1 {
+    font-size: 2.4rem;
+  }
+  .cta-group {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  .hero {
+    padding: 56px 18px 36px;
+  }
+  .board-panel {
+    padding: 22px;
+  }
+  .form-grid {
+    gap: 16px;
+  }
+  .request-card {
+    padding: 18px;
+  }
+}
+}
+.payment-section {
+  background: #1a234a;
+  border-radius: 24px;
+  padding: 0;
+  margin-top: 24px;
+  border: 1px solid rgba(255,255,255,0.1);
+  overflow: hidden;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+}
+.payment-header {
+  padding: 20px 24px;
+  font-size: 1.15rem;
+  font-weight: 700;
+  color: var(--text);
+  border-bottom: 1px solid rgba(255,255,255,0.08);
+}
+.payment-body {
+  padding: 24px;
+}
+.payment-option {
+  border: 1px solid rgba(255,255,255,0.1);
+  border-radius: 20px;
+  padding: 16px 20px;
+  margin-bottom: 16px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  transition: all 0.3s ease;
+}
+.payment-option.active {
+  border-color: var(--accent);
+  background: rgba(84, 193, 255, 0.05);
+  box-shadow: 0 0 0 1px var(--accent);
+}
+.radio-circle {
+  width: 20px;
+  height: 20px;
+  border: 2px solid rgba(255,255,255,0.3);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.payment-option.active .radio-circle {
+  border-color: var(--accent);
+}
+.payment-option.active .radio-circle::after {
+  content: "";
+  width: 10px;
+  height: 10px;
+  background: var(--accent);
+  border-radius: 50%;
+}
+.upi-apps-container {
+  padding: 10px 0 20px 32px;
+}
+.upi-apps-container p {
+  font-size: 0.9rem;
+  color: rgba(255,255,255,0.6);
+  margin-bottom: 16px;
+}
+.upi-grid {
+  display: flex;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+.upi-item {
+  background: rgba(255,255,255,0.05);
+  border: 1px solid rgba(255,255,255,0.1);
+  border-radius: 999px;
+  padding: 12px 24px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  min-width: 130px;
+  text-align: center;
+}
+.upi-item.active {
+  background: rgba(255,255,255,0.1);
+  border-color: var(--accent);
+}
+.upi-icon {
+  font-weight: 800;
+  font-size: 1.2rem;
+  margin-bottom: 2px;
+}
+.upi-name {
+  font-size: 0.85rem;
+  font-weight: 600;
+}
+.notice-box {
+  background: rgba(120, 255, 160, 0.08);
+  border: 1px solid rgba(120, 255, 160, 0.15);
+  border-radius: 12px;
+  padding: 14px 18px;
+  margin-top: 24px;
+  color: #a6ffb6;
+  font-size: 0.95rem;
+  line-height: 1.4;
+  margin-left: -32px;
+}
+.payment-footer {
+  margin-top: 24px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: #a6ffb6;
+  font-size: 0.95rem;
+  font-weight: 500;
+  opacity: 0.9;
+}
+.card-details-container {
+  padding: 10px 0 20px 32px;
+}
+.card-form {
+  display: grid;
+  gap: 16px;
+}
+.card-input-row {
+  display: grid;
+  grid-template-columns: 1.2fr 0.8fr;
+  gap: 12px;
+}
+.card-field {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.card-field label {
+  font-size: 0.85rem;
+  color: rgba(255,255,255,0.5);
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+.card-field input {
+  background: rgba(255,255,255,0.04);
+  border: 1px solid rgba(255,255,255,0.1);
+  padding: 14px 16px;
+  border-radius: 14px;
+  font-size: 1rem;
+  color: var(--text);
+}
+.card-field input:focus {
+  border-color: var(--accent);
+  background: rgba(255,255,255,0.08);
+}
+
+.price-summary {
+  background: #1a234a;
+  border-radius: 24px;
+  padding: 0;
+  margin-top: 24px;
+  border: 1px solid rgba(255,255,255,0.1);
+  overflow: hidden;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+}
+.price-header {
+  padding: 20px 24px;
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: rgba(255,255,255,0.5);
+  letter-spacing: 0.08em;
+  border-bottom: 1px solid rgba(255,255,255,0.08);
+}
+.price-body {
+  padding: 24px;
+}
+.price-row {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 18px;
+  font-size: 1.05rem;
+  color: var(--text);
+  align-items: center;
+}
+.price-row .label {
+  color: rgba(255,255,255,0.9);
+  font-weight: 500;
+}
+.price-row .value {
+  font-weight: 600;
+  font-size: 1.1rem;
+}
+.separator {
+  margin: 20px 0;
+  border-top: 1px dashed rgba(255,255,255,0.15);
+}
+.price-row.total {
+  font-size: 1.35rem;
+  font-weight: 700;
+  margin-bottom: 0;
+}
+.price-row.total .value {
+  font-size: 1.35rem;
+  color: var(--text);
+}
+
+@keyframes pulse-accent {
+  0% { box-shadow: 0 0 0 0 rgba(84,193,255,0.4); }
+  70% { box-shadow: 0 0 0 10px rgba(84,193,255,0); }
+  100% { box-shadow: 0 0 0 0 rgba(84,193,255,0); }
+}
+.calculating {
+  animation: pulse-accent 1.5s infinite;
+}
+
+/* Tracking Overlay Styles */
+.tracking-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(10, 15, 35, 0.98);
+  backdrop-filter: blur(15px);
+  z-index: 2000;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+}
+.tracking-overlay.active {
+  display: flex;
+}
+.tracking-container {
+  width: 100%;
+  max-width: 1100px;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 40px;
+  display: grid;
+  grid-template-columns: 1.2fr 0.8fr;
+  overflow: hidden;
+  box-shadow: 0 40px 100px rgba(0,0,0,0.5);
+}
+.tracking-visual {
+  background: linear-gradient(135deg, rgba(84, 193, 255, 0.03), transparent);
+  padding: 60px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  position: relative;
+}
+.tracking-details {
+  padding: 60px;
+  background: rgba(255, 255, 255, 0.02);
+  border-left: 1px solid rgba(255, 255, 255, 0.05);
+  display: flex;
+  flex-direction: column;
+}
+.tracking-header h2 {
+  font-size: 1.5rem;
+  margin-bottom: 8px;
+  line-height: 1.2;
+}
+.tracking-meta {
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: rgba(255, 255, 255, 0.5);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  margin-bottom: 30px;
+}
+.timeline {
+  margin-top: 15px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+.step {
+  display: flex;
+  gap: 15px;
+  position: relative;
+}
+.step:not(:last-child)::after {
+  content: "";
+  position: absolute;
+  left: 14px;
+  top: 28px;
+  width: 2px;
+  height: calc(100% + 5px);
+  background: rgba(255, 255, 255, 0.1);
+}
+.step.completed:not(:last-child)::after {
+  background: var(--accent);
+}
+.step-icon {
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.1);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1;
+  border: 2px solid transparent;
+}
+.step.completed .step-icon {
+  background: var(--accent);
+  color: #07101b;
+}
+.step.active .step-icon {
+  border-color: var(--accent);
+  background: #07101b;
+  box-shadow: 0 0 15px rgba(84, 193, 255, 0.4);
+}
+.step.active .step-icon::after {
+  content: "";
+  width: 8px;
+  height: 8px;
+  background: var(--accent);
+  border-radius: 50%;
+  animation: pulse-accent 1.5s infinite;
+}
+.step-content h4 {
+  font-size: 0.95rem;
+  margin-bottom: 2px;
+}
+.step-content p {
+  font-size: 0.8rem;
+  color: rgba(255, 255, 255, 0.6);
+}
+.step.active h4 {
+  color: var(--accent);
+}
+
+.map-simulation {
+  position: relative;
+  height: 300px;
+  display: flex;
+  align-items: center;
+  padding: 0 40px;
+}
+.track-line {
+  width: 100%;
+  height: 2px;
+  background: rgba(255, 255, 255, 0.1);
+  position: relative;
+}
+.current-pos {
+  position: absolute;
+  top: 50%;
+  left: 20%;
+  transform: translate(-50%, -50%);
+  width: 14px;
+  height: 14px;
+  background: var(--accent);
+  border-radius: 50%;
+  box-shadow: 0 0 20px var(--accent);
+  transition: left 2s linear;
+}
+.location-bubble {
+  position: absolute;
+  bottom: 25px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: var(--accent);
+  color: #07101b;
+  padding: 4px 12px;
+  border-radius: 8px;
+  font-size: 0.75rem;
+  font-weight: 800;
+  white-space: nowrap;
+}
+.location-bubble::after {
+  content: "";
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  border: 6px solid transparent;
+  border-top-color: var(--accent);
+}
+.requester-pos {
+  position: absolute;
+  top: 50%;
+  right: 0;
+  transform: translate(50%, -50%);
+  width: 10px;
+  height: 10px;
+  background: #ff8a54;
+  border-radius: 50%;
+}
+.requester-label {
+  position: absolute;
+  top: 20px;
+  right: -20px;
+  font-size: 0.75rem;
+  color: rgba(255, 255, 255, 0.6);
+  font-weight: 600;
+}
+.info-box {
+  position: absolute;
+  bottom: 40px;
+  left: 40px;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  padding: 20px;
+  border-radius: 20px;
+  backdrop-filter: blur(10px);
+}
+.info-box h5 {
+  font-size: 1rem;
+  margin-bottom: 5px;
+  color: var(--accent);
+}
+.info-box p {
+  font-size: 0.85rem;
+  color: rgba(255, 255, 255, 0.7);
+}
+
+.close-track-btn {
+  margin-top: auto;
+  padding: 18px;
+  border-radius: 20px;
+  border: none;
+  background: rgba(255, 255, 255, 0.08);
+  color: #fff;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+.close-track-btn:hover {
+  background: rgba(255, 255, 255, 0.12);
+}
+
+@media (max-width: 900px) {
+  .tracking-container {
+    grid-template-columns: 1fr;
+    max-height: 90vh;
+    overflow-y: auto;
+    width: 95%;
+  }
+  .tracking-visual {
+    padding: 25px 15px;
+    order: 2;
+    min-height: 200px;
+  }
+  .tracking-details {
+    padding: 25px 15px;
+    order: 1;
+  }
+  .tracking-header h2 {
+    font-size: 1.25rem;
+  }
+  .section {
+    padding: 40px 20px;
+  }
+  .hero {
+    padding: 80px 20px 40px;
+    text-align: center;
+  }
+  .hero-copy h1 {
+    font-size: 2.2rem;
+  }
+}
+
+/* Tablet Optimizations */
+@media (max-width: 1024px) {
+  .grid {
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  }
+  .board {
+    grid-template-columns: 1fr;
+    gap: 20px;
+  }
+  .navlinks {
+    display: none; /* Hide on smaller screens, use sidebar */
+  }
+  .authButtons {
+    display: none;
+  }
+}
+
+/* Auth Modal Mobile */
+@media (max-width: 480px) {
+  .auth-card {
+    padding: 30px 20px;
+    border-radius: 24px;
+  }
+  .auth-form h2 {
+    font-size: 1.2rem;
+  }
+}
+
+/* Smooth SPA Transitions */
+.page-view {
+  animation: fadeIn 0.4s ease-out;
+}
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* Auth Modal Styles */
+.auth-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(5, 10, 25, 0.9);
+  backdrop-filter: blur(12px);
+  z-index: 3000;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+}
+.auth-overlay.active {
+  display: flex;
+}
+.auth-card {
+  width: 100%;
+  max-width: 420px;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 32px;
+  padding: 40px;
+  box-shadow: 0 30px 80px rgba(0,0,0,0.4);
+  position: relative;
+}
+.auth-tabs {
+  display: flex;
+  background: rgba(255, 255, 255, 0.05);
+  padding: 6px;
+  border-radius: 16px;
+  margin-bottom: 30px;
+}
+.auth-tab {
+  flex: 1;
+  padding: 10px;
+  text-align: center;
+  font-weight: 700;
+  cursor: pointer;
+  border-radius: 12px;
+  transition: all 0.3s ease;
+  color: rgba(255, 255, 255, 0.5);
+  font-size: 0.85rem;
+}
+.auth-tab.active {
+  background: var(--accent);
+  color: #07101b;
+}
+.auth-form {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+.auth-form h2 {
+  font-size: 1.3rem;
+  margin-bottom: 3px;
+}
+.auth-form p {
+  color: rgba(255, 255, 255, 0.5);
+  font-size: 0.8rem;
+  margin-bottom: 8px;
+}
+.auth-btn {
+  width: 100%;
+  padding: 14px;
+  border-radius: 14px;
+  border: none;
+  background: var(--accent);
+  color: #07101b;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  margin-top: 5px;
+  font-size: 0.9rem;
+}
+.auth-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 25px rgba(84, 193, 255, 0.3);
+}
+.auth-close {
+  position: absolute;
+  top: 24px;
+  right: 24px;
+  background: none;
+  border: none;
+  color: #fff;
+  cursor: pointer;
+  opacity: 0.5;
+  transition: opacity 0.2s;
+}
+.auth-close:hover {
+  opacity: 1;
+}
+
+.user-profile {
+  display: none;
+  align-items: center;
+  gap: 12px;
+  padding: 8px 16px;
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 999px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  cursor: pointer;
+}
+.user-avatar {
+  width: 32px;
+  height: 32px;
+  background: var(--accent);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #07101b;
+  font-weight: 800;
+  font-size: 0.8rem;
+}
+</style>
+</head>
+<body>
+<header>
+  <div class="navbar">
+    <div style="display: flex; align-items: center; gap: 15px;">
+      <button class="nav-toggle" aria-label="Toggle navigation" onclick="toggleNav()">
+        <span></span>
+        <span></span>
+        <span></span>
+      </button>
+      <a href="javascript:void(0)" class="brand" onclick="handleLogoClick()">
+        <span class="logo">NH</span>
+        NearHelp
+      </a>
+    </div>
+    <nav class="navlinks">
+      <a href="javascript:void(0)" onclick="showPage('home')">Home</a>
+      <a href="javascript:void(0)" onclick="showPage('platform')">Platform</a>
+      <a href="javascript:void(0)" onclick="showPage('about')">About</a>
+      <a href="javascript:void(0)" onclick="showPage('requests')">Requests</a>
+    </nav>
+    <div id="authButtons" style="display: flex; gap: 12px; align-items: center;">
+      <button class="primary-btn" style="padding: 10px 24px; font-size: 0.95rem; box-shadow: 0 8px 20px rgba(84,193,255,0.15);" onclick="openAuth('login')">Login</button>
+    </div>
+    <div id="userProfile" class="user-profile" onclick="toggleUserMenu()">
+      <div class="user-avatar" id="userInitial">U</div>
+      <span id="userNameDisplay" style="font-size: 0.95rem; font-weight: 600;">User</span>
+    </div>
+  </div>
+</header>
+
+<div class="overlay" onclick="toggleNav()"></div>
+<aside class="sidebar">
+  <div class="sidebar-logo">
+    <div class="brand">
+      <span class="logo">NH</span>
+      NearHelp
+    </div>
+  </div>
+  <nav class="sidebar-nav">
+    <a href="javascript:void(0)" class="active" onclick="setActive(this); showPage('dashboard'); toggleNav()">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7"></rect><rect x="14" y="3" width="7" height="7"></rect><rect x="14" y="14" width="7" height="7"></rect><rect x="3" y="14" width="7" height="7"></rect></svg>
+      <span>Dashboard</span>
+    </a>
+    <a href="javascript:void(0)" onclick="setActive(this); showPage('home'); toggleNav()">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><polyline points="9 22 9 12 15 12 15 22"></polyline></svg>
+      <span>Home</span>
+    </a>
+    <a href="javascript:void(0)" onclick="setActive(this); showPage('platform'); toggleNav()">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path><polyline points="3.27 6.96 12 12.01 20.73 6.96"></polyline><line x1="12" y1="22.08" x2="12" y2="12"></line></svg>
+      <span>Platform</span>
+    </a>
+    <a href="javascript:void(0)" onclick="setActive(this); showPage('about'); toggleNav()">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="16" x2="12" y2="12"></line><line x1="12" y1="8" x2="12.01" y2="8"></line></svg>
+      <span>About</span>
+    </a>
+    <a href="javascript:void(0)" onclick="setActive(this); showPage('requests'); toggleNav()">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"></path><rect x="8" y="2" width="8" height="4" rx="1" ry="1"></rect></svg>
+      <span>Requests</span>
+    </a>
+    
+    <div id="sidebarAuth" style="margin-top: 20px; padding-top: 20px; border-top: 1px solid rgba(255,255,255,0.05);">
+      <a href="javascript:void(0)" id="sidebarLoginBtn" onclick="openAuth('login'); toggleNav()" style="background: var(--accent); color: #07101b; justify-content: center; border-radius: 12px; font-weight: 800;">
+        <span>Login</span>
+      </a>
+      <div id="sidebarProfile" style="display: none; align-items: center; gap: 12px; padding: 12px 16px; background: rgba(255,255,255,0.05); border-radius: 12px;" onclick="toggleUserMenu(); toggleNav()">
+        <div class="user-avatar" id="sidebarInitial" style="width: 28px; height: 28px; font-size: 0.7rem;">U</div>
+        <span id="sidebarNameDisplay" style="font-size: 0.9rem; font-weight: 600;">User</span>
+      </div>
+    </div>
+  </nav>
+</aside>
+<div id="page-home" class="page-view">
+  <section class="hero" id="home">
+    <div class="hero-copy">
+      <p style="color: var(--accent); font-weight: 700; letter-spacing: .15em; text-transform: uppercase; margin-bottom: 14px;">Welcome to NearHelp</p>
+      <h1>Your neighborhood support hub for quick, trustworthy local help.</h1>
+      <p>NearHelp connects you with nearby neighbors ready to assist with daily tasks, borrowing items, or providing rides. Join a trusted network built on mutual support and real-time tracking.</p>
+      <div style="margin-top: 32px; display: flex; gap: 16px;">
+        <button class="primary-btn" onclick="showPage('requests')">Explore Requests</button>
+        <button class="secondary-btn" onclick="showPage('platform')">How it Works</button>
+      </div>
+    </div>
+    <div class="hero-visual">
+      <div class="image-card" style="margin: 0; transform: none; width: 100%;">
+        <img src="https://images.unsplash.com/photo-1582213782179-e0d53f98f2ca?q=80&w=2070&auto=format&fit=crop" alt="Neighbors helping each other" style="border-radius: 24px; box-shadow: 0 30px 60px rgba(0,0,0,0.4);">
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="grid" style="grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 40px; align-items: center;">
+      <div>
+        <h2 style="font-size: 2.2rem; margin-bottom: 20px;">Built for Real People</h2>
+        <p style="font-size: 1.1rem; opacity: 0.8; margin-bottom: 24px;">NearHelp isn't just an app; it's a community bridge. We've designed a platform that makes asking for help as natural as talking to a friend across the fence.</p>
+        <ul style="list-style: none; display: flex; flex-direction: column; gap: 15px;">
+          <li style="display: flex; gap: 12px; align-items: center;">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+            <span>Verified neighbor profiles</span>
+          </li>
+          <li style="display: flex; gap: 12px; align-items: center;">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+            <span>Secure, automated payment processing</span>
+          </li>
+          <li style="display: flex; gap: 12px; align-items: center;">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+            <span>Live delivery & arrival tracking</span>
+          </li>
+        </ul>
+      </div>
+      <div class="image-card" style="margin: 0;">
+        <img src="https://images.unsplash.com/photo-1521791136064-7986c29596ba?q=80&w=2070&auto=format&fit=crop" alt="Trusted community service" style="border-radius: 32px;">
+      </div>
+    </div>
+  </section>
+
+  <section class="section" style="background: rgba(255,255,255,0.02); border-radius: 40px; padding: clamp(30px, 5vw, 60px); margin-bottom: 40px;">
+    <div style="text-align: center; max-width: 800px; margin: 0 auto 50px;">
+      <h2 style="font-size: clamp(1.8rem, 4vw, 2.5rem); margin-bottom: 16px;">Our Core Values</h2>
+      <p style="opacity: 0.7;">We believe in a world where technology brings us closer to those living right next door.</p>
+    </div>
+    <div class="grid info-grid">
+      <div class="feature-card">
+        <h3 style="color: var(--accent);">Transparency</h3>
+        <p>Every request is tracked in real-time, giving you peace of mind from post to arrival.</p>
+      </div>
+      <div class="feature-card">
+        <h3 style="color: var(--accent);">Trust</h3>
+        <p>Only registered community members can participate, ensuring a safe environment for everyone.</p>
+      </div>
+      <div class="feature-card">
+        <h3 style="color: var(--accent);">Efficiency</h3>
+        <p>Automated price calculations and payments mean you can focus on helping, not bookkeeping.</p>
+      </div>
+    </div>
+  </section>
+</div>
+
+<main>
+  <div id="page-platform" class="page-view hidden">
+    <section class="section" id="platform">
+      <div style="max-width: 800px; margin-bottom: 50px;">
+        <h2>The NearHelp Platform</h2>
+        <p style="font-size: 1.1rem; opacity: 0.8;">A refined neighborhood assistance hub designed for clarity, safety, and speed.</p>
+      </div>
+
+      <div class="feature-card" style="margin-bottom: 40px; padding: 40px; background: rgba(84,193,255,0.03);">
+        <h3 style="margin-bottom: 30px; font-size: 1.8rem;">How it Works</h3>
+        <div class="grid" style="grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 30px;">
+          <div style="text-align: center;">
+            <div style="width: 50px; height: 50px; background: var(--accent); color: #000; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 15px; font-weight: 800; font-size: 1.2rem;">1</div>
+            <h4 style="margin-bottom: 10px;">Post</h4>
+            <p style="font-size: 0.85rem; opacity: 0.7;">Create a request and set a price for the help you need.</p>
+          </div>
+          <div style="text-align: center;">
+            <div style="width: 50px; height: 50px; background: var(--accent); color: #000; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 15px; font-weight: 800; font-size: 1.2rem;">2</div>
+            <h4 style="margin-bottom: 10px;">Connect</h4>
+            <p style="font-size: 0.85rem; opacity: 0.7;">A trusted neighbor accepts your request and starts the journey.</p>
+          </div>
+          <div style="text-align: center;">
+            <div style="width: 50px; height: 50px; background: var(--accent); color: #000; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 15px; font-weight: 800; font-size: 1.2rem;">3</div>
+            <h4 style="margin-bottom: 10px;">Track</h4>
+            <p style="font-size: 0.85rem; opacity: 0.7;">Watch the progress live on your map until the helper arrives.</p>
+          </div>
+          <div style="text-align: center;">
+            <div style="width: 50px; height: 50px; background: var(--accent); color: #000; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 15px; font-weight: 800; font-size: 1.2rem;">4</div>
+            <h4 style="margin-bottom: 10px;">Resolve</h4>
+            <p style="font-size: 0.85rem; opacity: 0.7;">Help is delivered, and the request is automatically marked complete.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="feature-card">
+        <h2>Humanized support with a professional presentation</h2>
+        <p>NearHelp presents community assistance in a refined way: accessible copy, consistent visual hierarchy, and a calm interface tone. The result is a static website that feels well-designed yet practical, suitable for real neighborhood collaboration.</p>
+      </div>
+    </section>
+  </div>
+  
+  <div id="page-about" class="page-view hidden">
+    <section class="section" id="about">
+      <div style="max-width: 800px; margin-bottom: 40px;">
+        <h2>About NearHelp</h2>
+        <p style="font-size: 1.1rem; opacity: 0.8;">NearHelp was born from a simple idea: technology should bring us closer to the people living right next door. We are dedicated to building a trusted community space where asking for a favor is as easy as sending a text.</p>
+      </div>
+    <div class="grid info-grid" style="margin-bottom: 50px;">
+      <div class="feature-card">
+        <h3>Clear request creation</h3>
+        <p>Users can post precise support requests with category and concise description fields.</p>
+      </div>
+      <div class="feature-card">
+        <h3>Focused search</h3>
+        <p>Filter controls keep the board relevant, reducing clutter and surfacing active needs.</p>
+      </div>
+      <div class="feature-card">
+        <h3>Approachable interface</h3>
+        <p>The design is calm, readable, and easy to scan across devices.</p>
+      </div>
+    </div>
+
+    <div class="feature-card" style="background: rgba(74, 222, 128, 0.05); border-color: rgba(74, 222, 128, 0.1);">
+      <h2 style="margin-bottom: 25px; display: flex; align-items: center; gap: 12px; color: #4ade80;">
+        <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#4ade80" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg>
+        Trust & Safety
+      </h2>
+      <div class="grid" style="grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 30px;">
+        <div>
+          <h4 style="color: #4ade80; margin-bottom: 10px;">Verified Community</h4>
+          <p style="font-size: 0.85rem; opacity: 0.7;">We prioritize local residents. Every member must go through a community-based verification to ensure help comes from real neighbors.</p>
+        </div>
+        <div>
+          <h4 style="color: #4ade80; margin-bottom: 10px;">Secure Payments</h4>
+          <p style="font-size: 0.85rem; opacity: 0.7;">All financial transactions are handled through encrypted, automated gateways. Your data is never stored on our local servers.</p>
+        </div>
+        <div>
+          <h4 style="color: #4ade80; margin-bottom: 10px;">Transparent Tracking</h4>
+          <p style="font-size: 0.85rem; opacity: 0.7;">Our real-time tracking system ensures you know exactly where your helper is, providing total visibility and peace of mind.</p>
+        </div>
+        <div>
+          <h4 style="color: #4ade80; margin-bottom: 10px;">Zero-Tolerance Policy</h4>
+          <p style="font-size: 0.85rem; opacity: 0.7;">NearHelp maintains a strict code of conduct. Respectful communication is mandatory, and disruptive behavior results in immediate account suspension.</p>
+        </div>
+      </div>
+    </div>
+    </section>
+    
+    <section class="section" id="gallery">
+    <div class="grid image-grid">
+      <div class="image-card">
+        <img src="file:///C:/Users/hp/.gemini/antigravity/brain/cfb888a6-a267-4825-84a0-0044661ed8d5/neighborhood_help_1777179500082.png" alt="Neighbors helping with groceries" loading="lazy">
+        <p>Neighbors supporting each other with daily tasks and grocery assistance.</p>
+      </div>
+
+      <div class="image-card">
+        <img src="file:///C:/Users/hp/.gemini/antigravity/brain/cfb888a6-a267-4825-84a0-0044661ed8d5/community_garden_1777179571379.png" alt="Community members in a garden" loading="lazy">
+        <p>Working together in local spaces to build a stronger neighborhood.</p>
+      </div>
+
+      <div class="image-card">
+        <img src="file:///C:/Users/hp/.gemini/antigravity/brain/cfb888a6-a267-4825-84a0-0044661ed8d5/neighborly_support_1777179604520.png" alt="Neighbor lending a book" loading="lazy">
+        <p>Sharing resources and tools to help everyone in the community thrive.</p>
+      </div>
+    </section>
+  </div>
+
+  <div id="page-requests" class="page-view hidden">
+    <section class="section board" id="requests">
+      <div id="communityBoardSection" class="hidden">
+        <div class="board-panel">
+          <h2>Community request board</h2>
+          
+          <div class="stats-row" style="display: flex; gap: 16px; margin-bottom: 32px;">
+            <div class="stat-card active" style="flex: 1; background: rgba(84, 193, 255, 0.03); border: 1.5px solid rgba(84, 193, 255, 0.4); border-radius: 28px; padding: 32px 20px; text-align: center; box-shadow: 0 0 40px rgba(84, 193, 255, 0.05); transition: all 0.3s ease;">
+              <div id="activeCount" style="font-size: 2.8rem; font-weight: 800; color: var(--accent); margin-bottom: 12px; line-height: 1;">0</div>
+              <div style="font-size: 0.7rem; letter-spacing: 0.15em; font-weight: 700; opacity: 0.9; text-transform: uppercase;">Active Needs</div>
+            </div>
+            <div class="stat-card" style="flex: 1; background: rgba(255, 255, 255, 0.015); border: 1.5px solid rgba(255, 255, 255, 0.05); border-radius: 28px; padding: 32px 20px; text-align: center; transition: all 0.3s ease;">
+              <div id="resolvedCount" style="font-size: 2.8rem; font-weight: 800; color: #fff; margin-bottom: 12px; line-height: 1; opacity: 0.9;">0</div>
+              <div style="font-size: 0.7rem; letter-spacing: 0.15em; font-weight: 700; opacity: 0.5; text-transform: uppercase;">Resolved</div>
+            </div>
+          </div>
+
+          <div class="filter-row">
+            <select id="filterCat" onchange="filterRequests()">
+              <option value="All">All categories</option>
+              <option value="Borrow Item">Borrow Item</option>
+              <option value="Need Ride">Need Ride</option>
+              <option value="Need Notes">Need Notes</option>
+              <option value="Other">Other</option>
+            </select>
+            <input id="filterLoc" type="text" placeholder="Search requests..." oninput="filterRequests()">
+          </div>
+          <div id="board"></div>
+        </div>
+      </div>
+      <div id="postFormSection" class="hidden">
+        <div class="board-panel post-form">
+          <h2>Post your request</h2>
+          <p class="subtitle">Tell your neighbors what you need and where, so the community can respond quickly and clearly.</p>
+          <div class="form-grid">
+            <!-- Form content stays same... -->
+
+        <div class="form-field">
+          <label for="category">Category</label>
+          <select id="category" name="category" aria-label="Request category" onchange="updateCalculatedPrice()">
+            <option value="Borrow Item">Borrow Item</option>
+            <option value="Need Ride">Need Ride</option>
+            <option value="Need Notes">Need Notes</option>
+            <option value="Other">Other</option>
+          </select>
+        </div>
+        <div id="rideDetailsFields" class="hidden" style="grid-column: 1 / -1; display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
+          <div class="form-field">
+            <label for="pickup">Pickup Location</label>
+            <input id="pickup" name="pickup" placeholder="Starting point" oninput="updateCalculatedPrice()">
+          </div>
+          <div class="form-field">
+            <label for="drop">Drop Location</label>
+            <input id="drop" name="drop" placeholder="Destination" oninput="updateCalculatedPrice()">
+          </div>
+        </div>
+        <div id="noteDetailsFields" class="hidden" style="grid-column: 1 / -1;">
+          <div class="form-field">
+            <label for="delivery">Delivery Location</label>
+            <input id="delivery" name="delivery" placeholder="Where should the notes be delivered?" oninput="updateCalculatedPrice()">
+          </div>
+        </div>
+        <div class="form-field">
+          <label for="desc">Description</label>
+          <textarea id="desc" name="description" placeholder="Share the important details: who, what, when, and where." aria-label="Request description" oninput="updateCalculatedPrice()"></textarea>
+        </div>
+
+
+        <!-- Price Summary & Payment Section -->
+        <div class="action-row" style="grid-column: 1 / -1; display: block; margin-top: 0;">
+          <div class="price-summary" id="priceSummary">
+            <div class="price-header">2. PRICE DETAILS</div>
+            <div class="price-body">
+              <div class="price-row">
+                <span class="label">Base Fee (<span id="summaryCategory">Borrow Item</span>)</span>
+                <span class="value">₹<span id="baseRate">20</span></span>
+              </div>
+              <div class="price-row">
+                <span class="label">Service/Distance Fee</span>
+                <span class="value">₹<span id="serviceFee">0</span></span>
+              </div>
+              <div class="price-row">
+                <span class="label">Platform Fee</span>
+                <span class="value">₹5</span>
+              </div>
+              <div class="separator"></div>
+              <div class="price-row total">
+                <span class="label">Total Amount</span>
+                <span class="value">₹<span id="totalAmount">25</span></span>
+              </div>
+            </div>
+          </div>
+
+          <div class="payment-section">
+            <div class="payment-header">3. Payment Method</div>
+            <div class="payment-body">
+              <div class="payment-option active" id="option-upi" onclick="togglePaymentType('upi')">
+                <div class="radio-circle"></div>
+                <span style="font-weight: 600;">UPI Apps</span>
+              </div>
+              
+              <div id="upi-details" class="upi-apps-container">
+                <p>Select your UPI app to pay directly:</p>
+                <div class="upi-grid">
+                  <div class="upi-item active" id="upi-gpay" onclick="selectUPI('Google Pay')">
+                    <span class="upi-icon">G</span>
+                    <span class="upi-name">Google Pay</span>
+                  </div>
+                  <div class="upi-item" id="upi-phonepe" onclick="selectUPI('PhonePe')">
+                    <span class="upi-icon">P</span>
+                    <span class="upi-name">PhonePe</span>
+                  </div>
+                  <div class="upi-item" id="upi-paytm" onclick="selectUPI('Paytm')">
+                    <span class="upi-icon">Py</span>
+                    <span class="upi-name">Paytm</span>
+                  </div>
+                </div>
+                
+                <div class="notice-box" id="redirectNotice">
+                  You will be redirected to Google Pay to complete the payment.
+                </div>
+              </div>
+              
+              <div class="payment-option" id="option-card" onclick="togglePaymentType('card')">
+                <div class="radio-circle"></div>
+                <span style="font-weight: 600;">Credit / Debit Card</span>
+              </div>
+              
+              <div id="card-details" class="card-details-container" style="display: none;">
+                <div class="card-form">
+                  <div class="card-field">
+                    <label>Card Number</label>
+                    <input type="text" id="card-num" placeholder="XXXX XXXX XXXX XXXX">
+                  </div>
+                  <div class="card-field">
+                    <label>Cardholder Name</label>
+                    <input type="text" id="card-name" placeholder="Full Name">
+                  </div>
+                  <div class="card-input-row">
+                    <div class="card-field">
+                      <label>Expiry Date</label>
+                      <input type="text" id="card-expiry" placeholder="MM/YY">
+                    </div>
+                    <div class="card-field">
+                      <label>CVV</label>
+                      <input type="password" id="card-cvv" placeholder="***">
+                    </div>
+                  </div>
+                </div>
+              </div>
+              
+              <div class="payment-footer">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg>
+                Safe and secure payments
+              </div>
+            </div>
+            <input type="hidden" id="selectedPayment" value="Google Pay">
+          </div>
+
+          <div style="display: flex; justify-content: flex-end; margin-top: 32px;">
+            <button class="primary-btn" style="width: 100%; padding: 20px; font-size: 1.1rem; border-radius: 20px;" onclick="processPaymentAndAdd()">Pay & Post Request</button>
+          </div>
+        </div>
+      </div>
+    </div>
+    </section>
+
+    <div id="loginPromptSection" class="board-panel" style="text-align: center; background: rgba(84, 193, 255, 0.05); border-style: dashed; padding: 60px 40px; margin-top: 24px; grid-column: 1 / -1;">
+        <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" style="margin-bottom: 20px; opacity: 0.6;"><path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="8.5" cy="7" r="4"></circle><line x1="20" y1="8" x2="20" y2="14"></line><line x1="23" y1="11" x2="17" y2="11"></line></svg>
+        <h3>Community Transparency</h3>
+        <p style="margin: 10px 0 24px; opacity: 0.6;">You need to be logged in to view and post community requests.</p>
+        <button class="primary-btn" onclick="openAuth('login')">Login to Access Board</button>
+    </div>
+  </div>
+
+  <div id="page-dashboard" class="page-view hidden">
+    <section class="section">
+      <div class="feature-card">
+        <h2>Personal Dashboard</h2>
+        <p>Welcome to your personal NearHelp dashboard. Here you can see your active requests, community impact, and profile settings.</p>
+        <div style="margin-top: 24px; display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px;">
+          <div class="panel-item">
+            <h3 id="statRequests">0</h3>
+            <p>Your Requests</p>
+          </div>
+          <div class="panel-item">
+            <h3>3</h3>
+            <p>Active Help</p>
+          </div>
+          <div class="panel-item">
+            <h3>Premium</h3>
+            <p>Account Type</p>
+          </div>
+        </div>
+      </div>
+    </section>
+  </div>
+</main>
+<footer class="footer">
+  <strong>NearHelp</strong> — building thoughtful neighborhood support, one request at a time.
+  <div style="margin-top: 10px; font-size: 0.75rem; opacity: 0.4;">
+    <a href="javascript:void(0)" onclick="openAuth('creator')" style="color: inherit; text-decoration: none;">Creator Access</a>
+  </div>
+</footer>
+
+<!-- Auth Modal -->
+<div class="auth-overlay" id="authOverlay">
+  <div class="auth-card">
+    <button class="auth-close" onclick="closeAuth()">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+    </button>
+    <div class="auth-tabs">
+      <div class="auth-tab active" id="tab-login" onclick="switchAuthTab('login')">Login</div>
+      <div class="auth-tab" id="tab-signup" onclick="switchAuthTab('signup')">Sign Up</div>
+      <div class="auth-tab" id="tab-creator" style="display: none;" onclick="switchAuthTab('creator')">Creator</div>
+    </div>
+    
+    <div id="login-form" class="auth-form">
+      <h2>Welcome back</h2>
+      <p>Enter your details to access your neighborhood hub.</p>
+      <div class="form-field" style="margin-top: 0;">
+        <label style="font-size: 0.75rem;">Email Address</label>
+        <input type="email" placeholder="name@example.com" id="login-email" style="padding: 12px 14px; font-size: 0.9rem; border-radius: 12px;">
+      </div>
+      <div class="form-field" style="margin-top: 0;">
+        <label style="font-size: 0.75rem;">Password</label>
+        <input type="password" placeholder="••••••••" id="login-pass" style="padding: 12px 14px; font-size: 0.9rem; border-radius: 12px;">
+      </div>
+      <button class="auth-btn" onclick="handleAuth('login')">Login to NearHelp</button>
+      <p style="text-align: center; margin-top: 15px; font-size: 0.75rem;">
+        Don't have an account? <a href="#" onclick="switchAuthTab('signup')" style="color: var(--accent); text-decoration: none; font-weight: 700;">Sign Up</a>
+      </p>
+    </div>
+
+    <div id="signup-form" class="auth-form" style="display: none;">
+      <h2>Join the community</h2>
+      <p>Create an account to start helping your neighbors.</p>
+      <div class="form-field" style="margin-top: 0;">
+        <label style="font-size: 0.75rem;">Full Name</label>
+        <input type="text" placeholder="John Doe" id="signup-name" style="padding: 12px 14px; font-size: 0.9rem; border-radius: 12px;">
+      </div>
+      <div class="form-field" style="margin-top: 0;">
+        <label style="font-size: 0.75rem;">Email Address</label>
+        <input type="email" placeholder="name@example.com" id="signup-email" style="padding: 12px 14px; font-size: 0.9rem; border-radius: 12px;">
+      </div>
+      <div class="form-field" style="margin-top: 0;">
+        <label style="font-size: 0.75rem;">Password</label>
+        <input type="password" placeholder="••••••••" id="signup-pass" style="padding: 12px 14px; font-size: 0.9rem; border-radius: 12px;">
+      </div>
+      <button class="auth-btn" onclick="handleAuth('signup')">Create Account</button>
+      <p style="text-align: center; margin-top: 15px; font-size: 0.75rem;">
+        Already have an account? <a href="#" onclick="switchAuthTab('login')" style="color: var(--accent); text-decoration: none; font-weight: 700;">Login</a>
+      </p>
+    </div>
+
+    <div id="creator-form" class="auth-form" style="display: none;">
+      <h2 style="color: #ffcc00;">Creator Portal</h2>
+      <p>Access developer tools and platform configuration.</p>
+      <div class="form-field" style="margin-top: 0;">
+        <label style="font-size: 0.75rem; color: #ffcc00;">Creator Token</label>
+        <input type="password" placeholder="Enter secret token" id="creator-token" style="padding: 12px 14px; font-size: 0.9rem; border-radius: 12px; border-color: rgba(255, 204, 0, 0.3);">
+      </div>
+      <button class="auth-btn" style="background: #ffcc00; color: #000;" onclick="handleAuth('creator')">Verify Creator Access</button>
+      <p style="text-align: center; margin-top: 15px; font-size: 0.75rem;">
+        Not a creator? <a href="#" onclick="switchAuthTab('login')" style="color: #ffcc00; text-decoration: none; font-weight: 700;">Return to Login</a>
+      </p>
+    </div>
+  </div>
+</div>
+<div class="tracking-overlay" id="trackingOverlay">
+  <div class="tracking-container">
+    <div class="tracking-visual">
+      <div class="map-simulation">
+        <div class="track-line">
+          <div class="current-pos" id="currentPos">
+            <div class="location-bubble">Current Location</div>
+          </div>
+          <div class="requester-pos">
+            <div class="requester-label">Requester</div>
+          </div>
+        </div>
+      </div>
+      <div class="info-box" style="padding: 14px 18px;">
+        <h5 id="trackingStatusText" style="font-size: 0.95rem;">Locating item...</h5>
+        <p id="helperLocationText" style="color: var(--accent); font-size: 0.8rem; font-weight: 700; margin-bottom: 2px;">Helper: Near Central Park</p>
+        <p id="trackingEtaText" style="font-size: 0.8rem;">Est. arrival: 12 mins</p>
+      </div>
+    </div>
+    <div class="tracking-details">
+      <div class="tracking-header">
+        <h2 id="trackTitle">Need a study guide for university assignment</h2>
+        <div class="tracking-meta" id="trackMeta">NEED NOTES • CENTRAL DISTRICT</div>
+      </div>
+      
+      <!-- New Helper Info Card -->
+      <div id="helperInfoCard" class="info-box" style="position: static; margin-bottom: 20px; background: rgba(84, 193, 255, 0.05); border-color: rgba(84, 193, 255, 0.1); width: 100%; padding: 15px;">
+        <div style="display: flex; justify-content: space-between; align-items: flex-start;">
+          <div>
+            <h5 id="helperNameDisplay" style="font-size: 1rem; margin-bottom: 3px;">Finding Neighbor...</h5>
+            <p id="helperLocDisplay" style="font-size: 0.8rem; opacity: 0.8;">Status: Awaiting Response</p>
+          </div>
+          <div style="text-align: right;">
+            <div id="etaDisplay" style="font-size: 1.1rem; font-weight: 800; color: var(--accent);">--</div>
+            <div style="font-size: 0.65rem; opacity: 0.5; text-transform: uppercase;">Est. Arrival</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="timeline" id="trackingTimeline">
+        <div class="step completed">
+          <div class="step-icon">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+          </div>
+          <div class="step-content">
+            <h4>Request Posted</h4>
+            <p>Added to community board</p>
+          </div>
+        </div>
+        <div class="step active">
+          <div class="step-icon"></div>
+          <div class="step-content">
+            <h4>Action Taken</h4>
+            <p>Awaiting neighbor response</p>
+          </div>
+        </div>
+        <div class="step">
+          <div class="step-icon"></div>
+          <div class="step-content">
+            <h4>Helper Assigned</h4>
+            <p>Someone is ready to help!</p>
+          </div>
+        </div>
+        <div class="step">
+          <div class="step-icon"></div>
+          <div class="step-content">
+            <h4>In Transit</h4>
+            <p>Help is on the way</p>
+          </div>
+        </div>
+      </div>
+      <button class="close-track-btn" onclick="closeTracking()">Close Tracking</button>
+    </div>
+  </div>
+</div>
+
+<script>
+const categoryPricing = {
+  "Borrow Item": 20,
+  "Need Ride": 50,
+  "Need Notes": 30,
+  "Other": 40
+};
+
+function updateCalculatedPrice() {
+  const category = document.getElementById("category").value;
+  const desc = document.getElementById("desc").value.trim();
+  const pickup = document.getElementById("pickup").value.trim();
+  const drop = document.getElementById("drop").value.trim();
+  
+  // Show/Hide ride/item details
+  const rideFields = document.getElementById("rideDetailsFields");
+  if (category === "Need Ride" || category === "Borrow Item") {
+    rideFields.classList.remove("hidden");
+  } else {
+    rideFields.classList.add("hidden");
+  }
+  
+  // Show/Hide note details
+  const noteFields = document.getElementById("noteDetailsFields");
+  if (category === "Need Notes") {
+    noteFields.classList.remove("hidden");
+  } else {
+    noteFields.classList.add("hidden");
+  }
+  
+  // Update category text
+  document.getElementById("summaryCategory").innerText = category;
+  
+  // Get base rate
+  const baseRate = categoryPricing[category] || 40;
+  document.getElementById("baseRate").innerText = baseRate;
+  
+  // Calculate service fee (simulated distance/complexity)
+  let serviceFee = 0;
+
+  if (desc) {
+    serviceFee += Math.min(desc.length / 2, 50);
+  }
+  if ((category === "Need Ride" || category === "Borrow Item") && (pickup || drop)) {
+    serviceFee += (pickup.length + drop.length) * 1.5; // Additional fee for transit/delivery
+  }
+  const delivery = document.getElementById("delivery").value.trim();
+  if (category === "Need Notes" && delivery) {
+    serviceFee += delivery.length * 1.2; // Delivery fee for notes
+  }
+  
+  serviceFee = Math.round(serviceFee);
+  document.getElementById("serviceFee").innerText = serviceFee;
+  
+  // Calculate total
+  const total = baseRate + serviceFee + 5; // +5 platform fee
+  document.getElementById("totalAmount").innerText = total;
+  
+  // Visual feedback
+  const summary = document.getElementById("priceSummary");
+  summary.classList.add("calculating");
+  setTimeout(() => summary.classList.remove("calculating"), 500);
+}
+
+function selectUPI(app) {
+  const idMap = { 'Google Pay': 'gpay', 'PhonePe': 'phonepe', 'Paytm': 'paytm' };
+  document.querySelectorAll('.upi-item').forEach(item => item.classList.remove('active'));
+  document.getElementById(`upi-${idMap[app]}`).classList.add('active');
+  
+  document.getElementById('redirectNotice').innerText = `You will be redirected to ${app} to complete the payment.`;
+  document.getElementById('selectedPayment').value = app;
+}
+
+function togglePaymentType(type) {
+  document.querySelectorAll('.payment-option').forEach(opt => opt.classList.remove('active'));
+  document.getElementById(`option-${type}`).classList.add('active');
+  
+  const upiDetails = document.getElementById('upi-details');
+  const cardDetails = document.getElementById('card-details');
+  
+  if (type === 'upi') {
+    upiDetails.style.display = 'block';
+    cardDetails.style.display = 'none';
+    const activeUPI = document.querySelector('.upi-item.active .upi-name').innerText;
+    document.getElementById('selectedPayment').value = activeUPI;
+  } else {
+    upiDetails.style.display = 'none';
+    cardDetails.style.display = 'block';
+    document.getElementById('selectedPayment').value = 'Credit / Debit Card';
+  }
+}
+
+function processPaymentAndAdd() {
+  const paymentMethod = document.getElementById("selectedPayment").value;
+  const total = document.getElementById("totalAmount").innerText;
+  
+  if (!paymentMethod) {
+    alert("Please select a payment method.");
+    return;
+  }
+
+  // Validate Card Details if selected
+  if (paymentMethod === 'Credit / Debit Card') {
+    const num = document.getElementById('card-num').value.trim();
+    const name = document.getElementById('card-name').value.trim();
+    const expiry = document.getElementById('card-expiry').value.trim();
+    const cvv = document.getElementById('card-cvv').value.trim();
+    
+    if (!num || !name || !expiry || !cvv) {
+      alert("Please fill in all card details.");
+      return;
+    }
+  }
+  
+  const desc = document.getElementById("desc").value.trim();
+  const category = document.getElementById("category").value;
+  
+  if (!desc) {
+    alert("Please provide a description for the request.");
+    return;
+  }
+  
+  if (category === "Need Ride" || category === "Borrow Item") {
+    const pickup = document.getElementById("pickup").value.trim();
+    const drop = document.getElementById("drop").value.trim();
+    if (!pickup || !drop) {
+      alert("Please provide both pickup and drop locations.");
+      return;
+    }
+  }
+  
+  if (category === "Need Notes") {
+    const delivery = document.getElementById("delivery").value.trim();
+    if (!delivery) {
+      alert("Please provide a delivery location for the notes.");
+      return;
+    }
+  }
+  
+  // Simulated payment processing
+  const btn = document.querySelector(".primary-btn");
+  const originalText = btn.innerText;
+  btn.innerText = "Processing Payment...";
+  btn.disabled = true;
+  
+  setTimeout(() => {
+    // Handle UPI Redirection Simulation
+    if (paymentMethod !== 'Credit / Debit Card') {
+      const vpa = "nearhelp@upi"; // Placeholder VPA
+      const name = "NearHelp%20Community";
+      const note = encodeURIComponent(`Help Request: ${document.getElementById("desc").value.substring(0, 20)}...`);
+      const upiUri = `upi://pay?pa=${vpa}&pn=${name}&am=${total}&cu=INR&tn=${note}`;
+      
+      const webMap = {
+        'Google Pay': 'https://pay.google.com/',
+        'PhonePe': 'https://www.phonepe.com/',
+        'Paytm': 'https://paytm.com/'
+      };
+
+      console.log("Redirecting to UPI:", upiUri);
+      
+      // Attempt to trigger the deep link (Mobile focus)
+      window.location.href = upiUri;
+      
+      // Fallback: Open the related website in a new tab (Desktop focus)
+      if (webMap[paymentMethod]) {
+        window.open(webMap[paymentMethod], '_blank');
+      }
+      
+      alert(`Success! Opening ${paymentMethod} to process ₹${total}. Once you complete the payment, your request will be live on the board.`);
+    } else {
+      alert(`Success! Payment of ₹${total} via CARD processed.`);
+    }
+
+    btn.innerText = originalText;
+    btn.disabled = false;
+    addRequest(); // Proceed to add the request
+    
+    // Reset payment selection
+    togglePaymentType('upi');
+    selectUPI('Google Pay');
+    updateCalculatedPrice(); // Reset price display
+  }, 1500);
+}
+
+const initialRequests = [
+  { title: "Need a study guide for university assignment", category: "Need Notes", locality: "Central district", status: "Open", createdAt: "2026-04-10", response: "", amount: 35 },
+  { title: "Looking for a short-term laptop charger lend", category: "Borrow Item", locality: "Riverside", status: "Open", createdAt: "2026-04-09", response: "", amount: 25 },
+  { title: "Requesting a ride to the Saturday market", category: "Need Ride", locality: "West End", status: "Resolved", createdAt: "2026-04-08", response: "Ride arranged with Jay, leaving at 10am.", amount: 55 }
+];
+let requests = [...initialRequests];
+function renderRequests(list = requests) {
+  const board = document.getElementById("board");
+  board.innerHTML = "";
+  
+  // Update Counts
+  const activeCount = requests.filter(r => r.status !== 'Resolved').length;
+  const resolvedCount = requests.filter(r => r.status === 'Resolved').length;
+  const activeEl = document.getElementById('activeCount');
+  const resolvedEl = document.getElementById('resolvedCount');
+  if (activeEl) activeEl.innerText = activeCount;
+  if (resolvedEl) resolvedEl.innerText = resolvedCount;
+
+  if (!list.length) {
+    board.innerHTML = '<p style="color:var(--muted);margin-top:18px;">No requests match the selected filter.</p>';
+    return;
+  }
+  list.forEach((item, index) => {
+    const badgeClass = item.category.toLowerCase().replace(/\s+/g, '-');
+    const responded = Boolean(item.response);
+    const card = document.createElement("div");
+    card.className = "request-card";
+    card.innerHTML = `
+      <div class="card-meta">
+        <span class="badge ${badgeClass}">${item.category}</span>
+        <span class="price-badge">₹${item.amount || '—'}</span>
+        <span>${item.locality}</span>
+      </div>
+      <h3>${item.title}</h3>
+      ${item.pickup ? `<p style="color:var(--muted); font-size: 0.9rem; margin-top: 8px;"><strong>Pickup:</strong> ${item.pickup}</p>` : ''}
+      ${item.drop ? `<p style="color:var(--muted); font-size: 0.9rem; margin-top: 4px; margin-bottom: 12px;"><strong>Drop:</strong> ${item.drop}</p>` : ''}
+      ${item.deliveryLocation ? `<p style="color:var(--muted); font-size: 0.9rem; margin-top: 4px; margin-bottom: 12px;"><strong>Delivery To:</strong> ${item.deliveryLocation}</p>` : ''}
+      ${responded ? `<p style="color:var(--muted);margin-top:12px;">Response: ${item.response}</p>` : ''}
+      <div class="card-footer">
+        <span class="status-badge ${item.status === 'Open' ? 'status-open' : 'status-resolved'}">${item.status}</span>
+        <div style="display: flex; gap: 8px;">
+          <button class="secondary-btn" style="background: rgba(84, 193, 255, 0.1); border-color: rgba(84, 193, 255, 0.2); color: var(--accent);" onclick="openTracking(${index})">Track</button>
+          <button class="secondary-btn" onclick="respondRequest(${index})">${responded ? 'View response' : 'Respond'}</button>
+        </div>
+      </div>
+    `;
+    board.appendChild(card);
+  });
+}
+function toggleNav() {
+  document.body.classList.toggle('nav-open');
+}
+
+function setActive(el) {
+  document.querySelectorAll('.sidebar-nav a').forEach(a => a.classList.remove('active'));
+  el.classList.add('active');
+}
+const excludedLocalities = new Set([
+  "delhi",
+  "mumbai",
+  "bengaluru",
+  "kolkata",
+  "chennai",
+  "hyderabad",
+  "ahmedabad",
+  "pune",
+  "jaipur",
+  "lucknow",
+  "surat",
+  "kanpur",
+  "nagpur",
+  "indore",
+  "thane",
+  "bhopal",
+  "visakhapatnam",
+  "pimpri-chinchwad",
+  "patna",
+  "vadodara",
+  "ghaziabad",
+  "ludhiana",
+  "agra",
+  "nashik",
+  "faridabad",
+  "meerut",
+  "rajkot",
+  "kalyan",
+  "varanasi",
+  "srinagar",
+  "aurangabad",
+  "dhanbad",
+  "amritsar",
+  "navi mumbai",
+  "allahabad",
+  "ranchi",
+  "howrah",
+  "coimbatore",
+  "jabalpur",
+  "gwalior",
+  "vijayawada",
+  "madurai"
+]);
+function addRequest() {
+  const desc = document.getElementById("desc").value.trim();
+  const category = document.getElementById("category").value;
+  const pickup = document.getElementById("pickup").value.trim();
+  const drop = document.getElementById("drop").value.trim();
+  const delivery = document.getElementById("delivery").value.trim();
+  
+  if (!desc) {
+    alert("Please provide a description for the request.");
+    return;
+  }
+  const title = desc.substring(0, 60) + (desc.length > 60 ? "..." : "");
+  const today = new Date().toISOString().split('T')[0];
+  const amount = parseInt(document.getElementById("totalAmount").innerText);
+  const newRequest = { title, category, locality: "Nearby", status: "Open", createdAt: today, response: "", amount };
+  
+  if (category === "Need Ride" || category === "Borrow Item") {
+    newRequest.pickup = pickup;
+    newRequest.drop = drop;
+  }
+  if (category === "Need Notes") {
+    newRequest.deliveryLocation = delivery;
+  }
+  
+  requests.unshift(newRequest);
+  
+  // Reset fields
+
+  document.getElementById("desc").value = "";
+
+  document.getElementById("pickup").value = "";
+  document.getElementById("drop").value = "";
+  document.getElementById("delivery").value = "";
+  document.getElementById("filterLoc").value = "";
+  document.getElementById("filterCat").value = "All";
+  renderRequests();
+  openTracking(0);
+}
+
+function removePreviousRequest() {
+  if (!requests.length) {
+    alert("There is no previous request to remove.");
+    return;
+  }
+  requests.shift();
+  filterRequests();
+}
+function toggleStatus(index) {
+  requests[index].status = requests[index].status === "Open" ? "Resolved" : "Open";
+  renderRequests();
+}
+function respondRequest(index) {
+  const item = requests[index];
+  if (item.response) {
+    alert(`Response already sent:\n${item.response}`);
+    return;
+  }
+  const response = prompt("Enter your response to this request:");
+  if (!response || !response.trim()) {
+    return;
+  }
+  item.response = response.trim();
+  // item.status = "Resolved"; // REMOVED: Don't resolve immediately
+  renderRequests();
+  
+  // Start the delivery simulation
+  alert("Response sent! The delivery/help process has started. Tracking your neighbor now...");
+  openTracking(index);
+}
+function filterRequests() {
+  const category = document.getElementById("filterCat").value;
+  const query = document.getElementById("filterLoc").value.trim().toLowerCase();
+  const filtered = requests.filter(item => {
+    const categoryMatch = category === "All" || item.category === category;
+    const titleMatch = !query || item.title.toLowerCase().includes(query);
+    const localityMatch = !query || item.locality.toLowerCase().includes(query);
+    return categoryMatch && (titleMatch || localityMatch);
+  });
+  renderRequests(filtered);
+}
+
+// Tracking Logic
+let trackingInterval = null;
+
+function openTracking(index) {
+  const item = requests[index];
+  document.getElementById('trackTitle').innerText = item.title;
+  document.getElementById('trackMeta').innerText = `${item.category} • ${item.locality}`;
+  
+  const overlay = document.getElementById('trackingOverlay');
+  overlay.classList.add('active');
+  document.body.style.overflow = 'hidden';
+
+  // Initialize/Reset State
+  if (item.status === 'Resolved') {
+    showCompletedTracking(item);
+  } else if (item.response !== "") {
+    // If it has a response but not resolved yet, it's in progress
+    resetTrackingSimulation(item);
+    startTrackingSimulation(index);
+  } else {
+    // If it's just posted and not resolved/replied, stay at the first step
+    showPostedTracking(item);
+  }
+}
+
+function showPostedTracking(item) {
+  const currentPos = document.getElementById('currentPos');
+  currentPos.style.transition = 'none';
+  currentPos.style.left = '0%';
+  
+  const timeline = document.getElementById('trackingTimeline');
+  const steps = timeline.querySelectorAll('.step');
+  
+  steps.forEach((step, i) => {
+    step.classList.remove('completed', 'active');
+    if (i === 0) step.classList.add('completed');
+    if (i === 1) step.classList.add('active');
+  });
+
+  document.getElementById('trackingStatusText').innerText = "Request Posted";
+  document.getElementById('helperLocationText').innerText = "Status: Awaiting neighbor response";
+  document.getElementById('trackingEtaText').innerText = "Neighbors are being notified...";
+  document.querySelector('.location-bubble').innerText = "Posted";
+  
+  // Update Helper Info Card
+  document.getElementById('helperNameDisplay').innerText = "Finding Neighbor...";
+  document.getElementById('helperLocDisplay').innerText = "Status: Awaiting Response";
+  document.getElementById('etaDisplay').innerText = "--";
+  
+  if (trackingInterval) clearInterval(trackingInterval);
+}
+
+function showCompletedTracking(item) {
+  const currentPos = document.getElementById('currentPos');
+  currentPos.style.transition = 'none';
+  currentPos.style.left = '100%';
+  
+  const timeline = document.getElementById('trackingTimeline');
+  const steps = timeline.querySelectorAll('.step');
+  
+  steps.forEach(step => {
+    step.classList.add('completed');
+    step.classList.remove('active');
+    step.querySelector('.step-icon').innerHTML = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>';
+  });
+
+  document.getElementById('trackingStatusText').innerText = "Arrived & Resolved";
+  document.getElementById('helperLocationText').innerText = "Helper: At Your Location";
+  document.getElementById('trackingEtaText').innerText = "Request has been completed.";
+  document.querySelector('.location-bubble').innerText = "Arrived";
+
+  // Update Helper Info Card
+  document.getElementById('helperNameDisplay').innerText = "Neighbor Jay";
+  document.getElementById('helperLocDisplay').innerText = "Helper: At Your Location";
+  document.getElementById('etaDisplay').innerText = "0m";
+}
+
+function closeTracking() {
+  const overlay = document.getElementById('trackingOverlay');
+  overlay.classList.remove('active');
+  document.body.style.overflow = '';
+  if (trackingInterval) clearInterval(trackingInterval);
+}
+
+function resetTrackingSimulation(item) {
+  const currentPos = document.getElementById('currentPos');
+  currentPos.style.left = '0%';
+  
+  const timeline = document.getElementById('trackingTimeline');
+  const steps = timeline.querySelectorAll('.step');
+  
+  // Set initial states
+  steps.forEach((step, i) => {
+    step.classList.remove('completed', 'active');
+    if (i === 0) step.classList.add('completed'); // Posted is always done
+    if (i === 1) step.classList.add('active'); // Action Taken is starting
+  });
+
+  document.getElementById('trackingStatusText').innerText = "Locating neighbor...";
+  document.getElementById('helperLocationText').innerText = "Helper: Searching...";
+  document.getElementById('trackingEtaText').innerText = "Finding best match...";
+}
+
+const simulatedLocalities = ["Central Park", "Riverside", "West End", "Market Square", "Downtown", "Your Neighborhood"];
+
+function startTrackingSimulation(requestIndex) {
+  if (trackingInterval) clearInterval(trackingInterval);
+  
+  let progress = 0;
+  let step = 1;
+  const currentPos = document.getElementById('currentPos');
+  currentPos.style.transition = 'left 2s linear';
+  const statusText = document.getElementById('trackingStatusText');
+  const helperLocText = document.getElementById('helperLocationText');
+  const etaText = document.getElementById('trackingEtaText');
+  const steps = document.querySelectorAll('.step');
+
+  trackingInterval = setInterval(() => {
+    progress += 2;
+    if (progress > 100) progress = 100;
+    
+    currentPos.style.left = progress + '%';
+
+    // Update Helper Location based on progress
+    const locIndex = Math.min(Math.floor(progress / 20), simulatedLocalities.length - 1);
+    const currentLocName = simulatedLocalities[locIndex];
+    helperLocText.innerText = `Helper: Near ${currentLocName}`;
+    document.querySelector('.location-bubble').innerText = currentLocName;
+    
+    // Update Helper Info Card
+    document.getElementById('helperLocDisplay').innerText = `Near ${currentLocName}`;
+    const etaVal = Math.max(0, 10 - Math.floor(progress / 10));
+    document.getElementById('etaDisplay').innerText = etaVal + "m";
+
+    // Simulated status updates based on progress
+    if (progress > 25 && step === 1) {
+      step = 2;
+      steps[1].classList.remove('active');
+      steps[1].classList.add('completed');
+      steps[1].querySelector('.step-icon').innerHTML = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>';
+      steps[2].classList.add('active');
+      statusText.innerText = "Helper Assigned!";
+      document.getElementById('helperNameDisplay').innerText = "Neighbor Jay";
+      etaText.innerText = "Est. arrival: 8 mins";
+    }
+
+    if (progress > 60 && step === 2) {
+      step = 3;
+      steps[2].classList.remove('active');
+      steps[2].classList.add('completed');
+      steps[2].querySelector('.step-icon').innerHTML = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>';
+      steps[3].classList.add('active');
+      statusText.innerText = "Help is on the way";
+      etaText.innerText = "Est. arrival: 3 mins";
+    }
+
+    if (progress >= 100) {
+      clearInterval(trackingInterval);
+      steps[3].classList.remove('active');
+      steps[3].classList.add('completed');
+      steps[3].querySelector('.step-icon').innerHTML = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>';
+      statusText.innerText = "Arrived!";
+      etaText.innerText = "Neighbor has arrived at your location.";
+      
+      // Auto-resolve request on arrival
+      if (requests[requestIndex]) {
+        requests[requestIndex].status = "Resolved";
+        if (requests[requestIndex].response === "") {
+            requests[requestIndex].response = "Help delivered via community tracking.";
+        }
+        renderRequests();
+      }
+    }
+  }, 1000);
+}
+// Auth Logic
+function openAuth(mode = 'login') {
+  document.getElementById('authOverlay').classList.add('active');
+  switchAuthTab(mode);
+  document.body.style.overflow = 'hidden';
+}
+
+function closeAuth() {
+  document.getElementById('authOverlay').classList.remove('active');
+  document.body.style.overflow = '';
+}
+
+function switchAuthTab(mode) {
+  const loginTab = document.getElementById('tab-login');
+  const signupTab = document.getElementById('tab-signup');
+  const creatorTab = document.getElementById('tab-creator');
+  const loginForm = document.getElementById('login-form');
+  const signupForm = document.getElementById('signup-form');
+  const creatorForm = document.getElementById('creator-form');
+  
+  // Reset tabs
+  [loginTab, signupTab, creatorTab].forEach(t => t.classList.remove('active'));
+  [loginForm, signupForm, creatorForm].forEach(f => f.style.display = 'none');
+
+  if (mode === 'login') {
+    loginTab.classList.add('active');
+    loginForm.style.display = 'flex';
+  } else if (mode === 'signup') {
+    signupTab.classList.add('active');
+    signupForm.style.display = 'flex';
+  } else if (mode === 'creator') {
+    creatorTab.style.display = 'block';
+    creatorTab.classList.add('active');
+    creatorForm.style.display = 'flex';
+  }
+}
+
+function handleAuth(mode) {
+  const btn = mode === 'creator' ? document.querySelector(`#creator-form .auth-btn`) : document.querySelector(`.auth-btn`);
+  const originalText = btn.innerText;
+  btn.innerText = "Verifying...";
+  btn.disabled = true;
+
+  setTimeout(() => {
+    let name = "User";
+    if (mode === 'creator') {
+      const token = document.getElementById('creator-token').value;
+      if (token !== "CREATOR2026") {
+        alert("Invalid Master Key. Access Denied.");
+        btn.innerText = originalText;
+        btn.disabled = false;
+        return;
+      }
+      name = "Creator Admin";
+    } else if (mode === 'login') {
+      const email = document.getElementById('login-email').value;
+      name = email.split('@')[0];
+    } else {
+      name = document.getElementById('signup-name').value || "User";
+    }
+
+    // Update UI for Logged In state
+    document.getElementById('authButtons').style.display = 'none';
+    const profile = document.getElementById('userProfile');
+    profile.style.display = 'flex';
+    document.getElementById('userInitial').innerText = name.charAt(0).toUpperCase();
+    document.getElementById('userNameDisplay').innerText = name;
+
+    // Sidebar Update
+    document.getElementById('sidebarLoginBtn').style.display = 'none';
+    const sProfile = document.getElementById('sidebarProfile');
+    sProfile.style.display = 'flex';
+    document.getElementById('sidebarInitial').innerText = name.charAt(0).toUpperCase();
+    document.getElementById('sidebarNameDisplay').innerText = name;
+
+    if (mode === 'creator') {
+      profile.style.borderColor = '#ffcc00';
+      document.getElementById('userInitial').style.background = '#ffcc00';
+      document.getElementById('userInitial').innerText = "C";
+      sProfile.style.borderColor = '#ffcc00';
+      document.getElementById('sidebarInitial').style.background = '#ffcc00';
+      document.getElementById('sidebarInitial').innerText = "C";
+    } else {
+      profile.style.borderColor = 'rgba(255, 255, 255, 0.1)';
+      document.getElementById('userInitial').style.background = 'var(--accent)';
+      sProfile.style.borderColor = 'rgba(255, 255, 255, 0.1)';
+      document.getElementById('sidebarInitial').style.background = 'var(--accent)';
+    }
+    
+    document.getElementById('userNameDisplay').innerText = name;
+
+    // Show request options
+    document.getElementById('communityBoardSection').classList.remove('hidden');
+    document.getElementById('postFormSection').classList.remove('hidden');
+    document.getElementById('loginPromptSection').classList.add('hidden');
+
+    btn.innerText = originalText;
+    btn.disabled = false;
+    closeAuth();
+    alert(mode === 'creator' ? "Creator mode activated. Welcome back, Admin." : `Success! Welcome to NearHelp, ${name}.`);
+  }, 1000);
+}
+
+function toggleUserMenu() {
+  if (confirm("Would you like to logout?")) {
+    document.getElementById('authButtons').style.display = 'flex';
+    document.getElementById('userProfile').style.display = 'none';
+    
+    // Sidebar Update
+    document.getElementById('sidebarLoginBtn').style.display = 'flex';
+    document.getElementById('sidebarProfile').style.display = 'none';
+
+    // Hide request options
+    document.getElementById('communityBoardSection').classList.add('hidden');
+    document.getElementById('postFormSection').classList.add('hidden');
+    document.getElementById('loginPromptSection').classList.remove('hidden');
+
+    alert("You have been logged out.");
+    showPage('home');
+  }
+}
+
+function showPage(pageId) {
+  // Hide all pages
+  document.querySelectorAll('.page-view').forEach(p => p.classList.add('hidden'));
+  
+  // Show target page
+  const target = document.getElementById(`page-${pageId}`);
+  if (target) {
+    target.classList.remove('hidden');
+    window.scrollTo(0, 0);
+  }
+
+  // Update nav active states
+  updateNavActive(pageId);
+}
+
+function updateNavActive(pageId) {
+  // Update navlinks
+  document.querySelectorAll('.navlinks a').forEach(a => {
+    if (a.innerText.toLowerCase() === pageId) a.style.color = 'var(--text)';
+    else a.style.color = 'var(--muted)';
+  });
+
+  // Update sidebar
+  document.querySelectorAll('.sidebar-nav a').forEach(a => {
+    const text = a.querySelector('span').innerText.toLowerCase();
+    if (text === pageId) a.classList.add('active');
+    else a.classList.remove('active');
+  });
+}
+
+// Secret Creator Trigger (5 rapid clicks on logo)
+let logoClicks = 0;
+let logoClickTimer;
+
+function handleLogoClick() {
+  logoClicks++;
+  clearTimeout(logoClickTimer);
+  
+  if (logoClicks === 5) {
+    logoClicks = 0;
+    openAuth('creator');
+    return;
+  }
+  
+  logoClickTimer = setTimeout(() => {
+    logoClicks = 0;
+    // Fallback: If just a single click and not in creator mode, go home
+    if (logoClicks === 0) showPage('home');
+  }, 400);
+}
+
+// Initial Page
+showPage('home');
+
+renderRequests();
+</script>
+</body>
+</html>
